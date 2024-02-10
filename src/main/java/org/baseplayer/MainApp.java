@@ -10,12 +10,13 @@ import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 public class MainApp extends Application {
+    public static Stage stage;
+    
     @Override
-    public void start(Stage stage) throws Exception {
-       //Parent root = FXMLLoader.load(getClass().getResource("scene.fxml"));
-      // System.out.println(getClass().getResource("styles.css"));
+    public void start(Stage primaryStage) throws Exception {
+        stage = primaryStage;
         Scene scene = new Scene(loadFXML("Main"));
-        //Scene scene = new Scene(root);
+       
         scene.getStylesheets().add(MainApp.class.getResource("styles.css").toExternalForm());
         Image icon = new Image(MainApp.class.getResource("BasePlayer_icon.png").toString());
         stage.getIcons().add(icon);
