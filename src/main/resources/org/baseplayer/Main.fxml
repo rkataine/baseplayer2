@@ -27,7 +27,7 @@
          </children>
       </VBox>
       <TextField layoutX="318.0" layoutY="1.0" prefHeight="0.0" prefWidth="149.0" promptText="Search" />
-      <Button layoutX="105.0" layoutY="1.0" mnemonicParsing="false" text="Variant Manager" />
+      <Button layoutX="105.0" layoutY="1.0" mnemonicParsing="false" text="Variant Manager" onAction="#setDarkMode" />
       <ComboBox layoutX="215.0" layoutY="1.0" prefHeight="25.0" prefWidth="67.0" promptText="Chr" />
       <TextField editable="false" layoutX="504.0" layoutY="1.0" prefHeight="0.0" prefWidth="149.0" promptText="position" />
       <Button layoutX="287.0" layoutY="1.0" mnemonicParsing="false" text="&lt;" />
