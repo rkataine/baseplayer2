@@ -1,27 +1,27 @@
 package org.baseplayer;
 
-import java.io.File;
+/* import java.io.File;
 import java.io.FilenameFilter;
-import java.util.Arrays;
+import java.util.Arrays; */
 import java.util.HashMap;
 import javafx.stage.FileChooser;
 
 public class FileDialog {
-  private final int dialogType;
+  /* private final int dialogType;
   private final String header;
   private final String filtertype;
   private final boolean multiSelect;
-  private String filterString = "";
+  private String filterString = ""; */
   private static HashMap<String, String> filefilters = new HashMap<String, String>();
   public static HashMap<String, String> defaultPaths = new HashMap<String, String>();
   public static HashMap<String, String> savePaths = new HashMap<String, String>();
 
   public FileDialog(String header, String filtertype, int dialogType /*FileDialog.LOAD / SAVE*/, boolean multiSelect) {
-    this.dialogType = dialogType;
+    /* this.dialogType = dialogType;
     this.header = header;
     this.filterString = filefilters.get(filtertype);
     this.filtertype = filtertype;
-    this.multiSelect = multiSelect;
+    this.multiSelect = multiSelect; */
   }
   public static void chooseFiles() {
    // if (VariantHandler.frame != null) VariantHandler.frame.setState(Frame.ICONIFIED);
@@ -37,13 +37,13 @@ public class FileDialog {
     /*   savePath(files);
       return files; */
   }
-  private void savePath(File[] files) {
+  /* private void savePath(File[] files) {
     if (files.length == 0) return;
     defaultPaths.put(filtertype, files[0].getParent());
     //MainPane.writeToConfig(savePaths.get(filtertype) +"=" + defaultPaths.get(filtertype));
   }
   private FilenameFilter fileNameFilter = (dir, name) -> Arrays.asList(this.filterString.replace("*", "").split(";")).stream().anyMatch(name.toLowerCase()::endsWith);
-  
+   */
   static {
     savePaths.put("VCF", "DefaultDir");
     savePaths.put("BAM", "DefaultTrackDir");

@@ -1,13 +1,17 @@
 package org.baseplayer;
 
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.MenuBar;
+import javafx.scene.layout.AnchorPane;
+
 
 public class Controller {
   @FXML
-  private MenuBar menuBar; // refers to Main.fxml's MenuBar
-  public void openFileMenu(ActionEvent event) {
-    FileDialog.chooseFiles();
+  private AnchorPane drawCanvas;
+
+  public void initialize() {
+    
+    new DrawSampleData(drawCanvas);
+    
   }
+  
 }

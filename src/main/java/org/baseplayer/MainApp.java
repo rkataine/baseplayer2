@@ -18,6 +18,7 @@ public class MainApp extends Application {
         Scene scene = new Scene(loadFXML("Main"));
        
         scene.getStylesheets().add(MainApp.class.getResource("styles.css").toExternalForm());
+        //new DrawSampleData().initialize();
         Image icon = new Image(MainApp.class.getResource("BasePlayer_icon.png").toString());
         stage.getIcons().add(icon);
         stage.setTitle("BasePlayer 2");
