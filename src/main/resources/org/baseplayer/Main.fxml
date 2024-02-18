@@ -1,18 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
-<?import javafx.scene.control.Menu?>
-<?import javafx.scene.control.MenuBar?>
-<?import javafx.scene.control.MenuItem?>
-<?import javafx.scene.control.SeparatorMenuItem?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" nodeOrientation="LEFT_TO_RIGHT" prefHeight="600.0" prefWidth="883.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.baseplayer.Controller">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" nodeOrientation="LEFT_TO_RIGHT" prefHeight="600.0" prefWidth="883.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.baseplayer.controllers.MainController">
    <children>
       <VBox layoutX="1.0" prefHeight="600.0" prefWidth="883.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="-0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
@@ -21,16 +16,17 @@
             <SplitPane dividerPositions="0.16631726065688335" orientation="VERTICAL" prefHeight="584.0" prefWidth="883.0" VBox.vgrow="ALWAYS">
               <items>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0" />
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0" fx:id="drawCanvas" />
+                <AnchorPane fx:id="drawCanvas" minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0" />
               </items>
             </SplitPane>
          </children>
       </VBox>
       <TextField layoutX="318.0" layoutY="1.0" prefHeight="0.0" prefWidth="149.0" promptText="Search" />
-      <Button layoutX="105.0" layoutY="1.0" mnemonicParsing="false" text="Variant Manager" onAction="#setDarkMode" />
-      <ComboBox layoutX="215.0" layoutY="1.0" prefHeight="25.0" prefWidth="67.0" promptText="Chr" />
-      <TextField editable="false" layoutX="504.0" layoutY="1.0" prefHeight="0.0" prefWidth="149.0" promptText="position" />
+      <Button layoutX="95.0" layoutY="1.0" mnemonicParsing="false" onAction="#setDarkMode" text="Variant Manager" />
+      <ComboBox layoutX="210.0" layoutY="1.0" prefHeight="25.0" prefWidth="67.0" promptText="Chr" />
+      <TextField editable="false" layoutX="504.0" layoutY="1.0" prefHeight="25.0" prefWidth="135.0" promptText="position" />
       <Button layoutX="287.0" layoutY="1.0" mnemonicParsing="false" text="&lt;" />
       <Button layoutX="473.0" layoutY="1.0" mnemonicParsing="false" text="&gt;" />
+      <Button layoutX="650.0" layoutY="1.0" mnemonicParsing="false" onAction="#zoomout" text="Zoomout" />
    </children>
 </AnchorPane>

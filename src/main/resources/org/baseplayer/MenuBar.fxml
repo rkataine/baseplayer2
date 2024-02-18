@@ -11,17 +11,17 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
 
-<MenuBar fx:id="menuBar" fx:controller="org.baseplayer.FXMLController" prefWidth="883.0" VBox.vgrow="NEVER" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
+<MenuBar fx:id="menuBar" fx:controller="org.baseplayer.controllers.MenuBarController" prefWidth="883.0" VBox.vgrow="NEVER" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
   <menus>
     <Menu mnemonicParsing="false" text="File">
       <items>
-          <MenuItem mnemonicParsing="false" text="Open VCF file(s)" />
-          <MenuItem mnemonicParsing="false" onAction="#openFileMenu" text="Open BAM file(s)" />
-          <MenuItem mnemonicParsing="false" text="Open control file(s)" />
-          <MenuItem mnemonicParsing="false" text="Open track file(s)" />
+          <MenuItem mnemonicParsing="false" id="LOAD_VCF" onAction="#openFileMenu" text="Open VCF file(s)" />
+          <MenuItem mnemonicParsing="false" id="LOAD_BAM" onAction="#openFileMenu" text="Open BAM file(s)" />
+          <MenuItem mnemonicParsing="false" id="LOAD_CTRL" onAction="#openFileMenu" text="Open control file(s)" />
+          <MenuItem mnemonicParsing="false" id="LOAD_BED" onAction="#openFileMenu" text="Open track file(s)" />
           <SeparatorMenuItem mnemonicParsing="false" />
-          <MenuItem mnemonicParsing="false" text="Open session" />
-          <MenuItem mnemonicParsing="false" text="Save session" />
+          <MenuItem mnemonicParsing="false" id="LOAD_SES" onAction="#openFileMenu" text="Open session" />
+          <MenuItem mnemonicParsing="false" id="SAVE_SES" onAction="#openFileMenu" text="Save session" />
           <SeparatorMenuItem mnemonicParsing="false" />
         <MenuItem mnemonicParsing="false" text="Close" />
       </items>
