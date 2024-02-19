@@ -21,17 +21,14 @@ public class MainApp extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         stage = primaryStage;
-        scene = new Scene(loadFXML("Main"));
-       
+        scene = new Scene(loadFXML("Main"));       
         scene.getStylesheets().add(getResource("styles.css").toExternalForm());
-        setDarkMode();
-        //new DrawSampleData().initialize();
+        setDarkMode();       
         Image icon = new Image(getResource("BasePlayer_icon.png").toString());
         stage.getIcons().add(icon);
         stage.setTitle("BasePlayer 2");
         stage.setScene(scene);
-        stage.setFullScreen(false);
-        //MainController.setDarkMode(null);
+        stage.setFullScreen(false);       
         stage.show();
     }
     private static Parent loadFXML(String fxml) throws IOException {
@@ -47,7 +44,5 @@ public class MainApp extends Application {
         DrawFunctions.update.set(!DrawFunctions.update.get());
     }
     static URL getResource(String string) { return MainApp.class.getResource(string); }
-    public static void main(String[] args) {
-        launch(args);
-    }
+    public static void main(String[] args) { launch(args); }
 }

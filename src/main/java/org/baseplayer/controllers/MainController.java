@@ -4,7 +4,6 @@ import org.baseplayer.MainApp;
 import org.baseplayer.draw.DrawChromData;
 import org.baseplayer.draw.DrawFunctions;
 import org.baseplayer.draw.DrawSampleData;
-
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
@@ -20,17 +19,15 @@ public class MainController {
   @FXML
   private TextField positionField;
 
-  public void setDarkMode(ActionEvent event) {
-    MainApp.setDarkMode();
-  }
+  public void setDarkMode(ActionEvent event) { MainApp.setDarkMode(); }
   public void zoomout(ActionEvent event) { ((DrawFunctions)drawCanvas.getChildren().get(0)).zoomout(); }
 
-  public void initialize() {    
-    DrawSampleData canvas = new DrawSampleData(new Canvas(), drawCanvas);
+  public void initialize() {
     DrawChromData cCanvas = new DrawChromData(new Canvas(), chromCanvas);
-   
-    drawCanvas.getChildren().addAll(canvas, canvas.getReactiveCanvas());
+    DrawSampleData canvas = new DrawSampleData(new Canvas(), drawCanvas);
+    
     chromCanvas.getChildren().addAll(cCanvas, cCanvas.getReactiveCanvas());
+    drawCanvas.getChildren().addAll(canvas, canvas.getReactiveCanvas());
     
     DrawSampleData.update.addListener((observable, oldValue, newValue) -> {
       cCanvas.draw();

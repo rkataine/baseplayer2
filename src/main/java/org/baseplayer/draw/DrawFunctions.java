@@ -61,19 +61,7 @@ public class DrawFunctions extends Canvas {
     reactiveCanvas.setOnMousePressed(event -> mousePressedX = event.getX() );
     reactiveCanvas.setOnMouseDragged(event -> handleDrag(event));
     reactiveCanvas.setOnScroll(event -> handleScroll(event) );
-    reactiveCanvas.setOnMouseReleased(event -> {
-      
-      if (lineZoomer) { lineZoomer = false; return; }
-      if (zoomDrag) {
-        zoomDrag = false;
-        clearReactive();
-        if (mousePressedX > mouseDraggedX) return;
-
-        double start = screenPosToChromPos.apply(mousePressedX);
-        double end = screenPosToChromPos.apply(mouseDraggedX);
-        setStartEnd(start, end);
-      }
-    });
+    reactiveCanvas.setOnMouseReleased(event -> { handleMouseRelease(event); });   
   }
   void handleScroll(ScrollEvent event) {
     event.consume();
@@ -108,6 +96,18 @@ public class DrawFunctions extends Canvas {
       lineZoomer = true;
       zoom(dragX - mousePressedX, mousePressedX);
       mousePressedX = dragX;
+    }
+  }
+  void handleMouseRelease(MouseEvent event) {
+    if (lineZoomer) { lineZoomer = false; return; }
+    if (zoomDrag) {
+      zoomDrag = false;
+      clearReactive();
+      if (mousePressedX > mouseDraggedX) return;
+
+      double start = screenPosToChromPos.apply(mousePressedX);
+      double end = screenPosToChromPos.apply(mouseDraggedX);
+      setStartEnd(start, end);
     }
   }
   void clearReactive() { reactivegc.clearRect(0, 0, getWidth(), getHeight()); }
