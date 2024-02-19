@@ -44,9 +44,10 @@ public class MainController {
     drawCanvas.getChildren().addAll(canvas, reactiveCanvas);
     chromCanvas.getChildren().addAll(cCanvas, reactiveCanvas2);
     
-    DrawSampleData.update.addListener((observable, oldValue, newValue) -> { 
-      canvas.draw();
+    DrawSampleData.update.addListener((observable, oldValue, newValue) -> {
       cCanvas.draw();
+      canvas.draw();
+      
       positionField.setText("Chr1:" + (int)DrawFunctions.start + " - " + (int)(DrawFunctions.end - 1));
     });
   }
