@@ -39,7 +39,7 @@ public class MainApp extends Application {
         
         if (darkMode) scene.getStylesheets().remove(getResource("darkmode.css").toExternalForm());
         else scene.getStylesheets().add(getResource("darkmode.css").toExternalForm());
-        DrawFunctions.lineColor = darkMode ? DrawFunctions.lineColor = Color.BLACK : new Color(0, 1, 0, 0.5);
+        DrawFunctions.lineColor = darkMode ? DrawFunctions.lineColor = new Color(0.3, 0.6, 0.6, 0.5) : new Color(0.5, 0.8, 0.8, 0.5);
         darkMode = !darkMode;
         DrawFunctions.update.set(!DrawFunctions.update.get());
     }

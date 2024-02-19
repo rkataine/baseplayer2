@@ -14,6 +14,8 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.LinearGradient;
+import javafx.scene.paint.Stop;
 import javafx.scene.text.Font;
 
 public class DrawFunctions extends Canvas {
@@ -28,8 +30,12 @@ public class DrawFunctions extends Canvas {
   private GraphicsContext gc;
   private GraphicsContext reactivegc;
   private boolean lineZoomer = false;
-  public static Color lineColor = new Color(0, 1, 0, 0.5);
-  static Color zoomColor = new Color(0, 1, 1, 0.2);
+  public static Color lineColor = new Color(0.5, 0.8, 0.8, 0.5);
+  static LinearGradient zoomColor = new LinearGradient(
+    0, 0, 1, 1, true, javafx.scene.paint.CycleMethod.NO_CYCLE,
+    new Stop(0, javafx.scene.paint.Color.rgb(105, 255, 0, 0.2)),  // Red with 50% transparency
+    new Stop(1, javafx.scene.paint.Color.rgb(0, 200, 255, 0.2))   // Blue with 50% transparency
+  );
   static Font tekstifont = new Font("Arial", 10);
   
   static Function<Double, Double> chromPosToScreenPos = chromPos -> (chromPos - start) * pixelSize;
@@ -90,12 +96,17 @@ public class DrawFunctions extends Canvas {
       mousePressedX = dragX;
       return;
     }
+    
     reactivegc.setFill(zoomColor);
+    reactivegc.setStroke(Color.WHITESMOKE);
     zoomDrag = true;
     mouseDraggedX = dragX;
     clearReactive();
-    if (!lineZoomer && mouseDraggedX >= mousePressedX) reactivegc.fillRect(mousePressedX, 0, mouseDraggedX-mousePressedX, getHeight());
-    else {
+    if (!lineZoomer && mouseDraggedX >= mousePressedX) {
+      reactivegc.fillRect(mousePressedX, 0, mouseDraggedX-mousePressedX, getHeight());
+      reactivegc.strokeRect(mousePressedX, 0, mouseDraggedX-mousePressedX, getHeight());
+
+    } else {
       zoomDrag = false;
       lineZoomer = true;
       zoom(dragX - mousePressedX, mousePressedX);
@@ -138,12 +149,12 @@ public class DrawFunctions extends Canvas {
     scale = viewLength / getWidth();
     update.set(!update.get());
   }
-  public void zoomout() { zoomAnimation(1, chromSize);/* viewLength = chromSize; setStart(1); */ };
+  public void zoomout() { zoomAnimation(1, chromSize); };
 
   void zoom(double zoomDirection, double mousePos) {
     int direction = zoomDirection > 0 ? 1 : -1;
     double pivot = mousePos / getWidth();
-    double acceleration = viewLength/getWidth() * 10;
+    double acceleration = viewLength/getWidth() * 15;
     double newSize = viewLength - zoomFactor * acceleration * direction;
     if (newSize < minZoom) newSize = minZoom;
     double start = screenPosToChromPos.apply(mousePos) - (pivot * newSize);
