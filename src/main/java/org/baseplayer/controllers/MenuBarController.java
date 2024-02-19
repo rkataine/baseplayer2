@@ -18,5 +18,5 @@ public class MenuBarController {
         
         List<File> files = fileDialog.chooseFiles();
         System.out.println(files);
-    }    
+    }
 }
