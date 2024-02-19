@@ -1,8 +1,12 @@
 package org.baseplayer.draw;
 
 import java.util.function.Function;
+
+import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.MouseButton;
@@ -107,9 +111,10 @@ public class DrawFunctions extends Canvas {
 
       double start = screenPosToChromPos.apply(mousePressedX);
       double end = screenPosToChromPos.apply(mouseDraggedX);
-      setStartEnd(start, end);
+      zoomAnimation(start, end);
     }
   }
+ 
   void clearReactive() { reactivegc.clearRect(0, 0, getWidth(), getHeight()); }
   void setStart(double start) {
     if (start < 1) start = 1;
@@ -118,7 +123,6 @@ public class DrawFunctions extends Canvas {
     setStartEnd(start, start+viewLength);
   }
   void setStartEnd(Double start, double end) {
-   
     if (end - start < minZoom) {
         start = (start+(end-start)/2) - minZoom/2;
         end = start + minZoom;
@@ -134,7 +138,7 @@ public class DrawFunctions extends Canvas {
     scale = viewLength / getWidth();
     update.set(!update.get());
   }
-  public void zoomout() { viewLength = chromSize; setStart(1); };
+  public void zoomout() { zoomAnimation(1, chromSize);/* viewLength = chromSize; setStart(1); */ };
 
   void zoom(double zoomDirection, double mousePos) {
     int direction = zoomDirection > 0 ? 1 : -1;
@@ -145,5 +149,25 @@ public class DrawFunctions extends Canvas {
     double start = screenPosToChromPos.apply(mousePos) - (pivot * newSize);
     double end = start + newSize;
     setStartEnd(start, end);
+  }
+
+  void zoomAnimation(double start, double end) {
+    new Thread(() -> {
+      final DoubleProperty currentStart = new SimpleDoubleProperty(DrawFunctions.start);
+      final DoubleProperty currentEnd = new SimpleDoubleProperty(DrawFunctions.end);
+      int startStep = (int)(start - DrawFunctions.start)/10;
+      int endStep = (int)(DrawFunctions.end - end)/10;
+     
+      while (true) {
+        Platform.runLater(() -> { setStartEnd(currentStart.get(), currentEnd.get()); });
+        currentStart.set(currentStart.get() + startStep);
+        currentEnd.set(currentEnd.get() - endStep);
+        if ((startStep > 0 && currentStart.get() >= start) || (startStep < 0 && currentStart.get() <= start)) {
+          Platform.runLater(() -> { setStartEnd(start, end); });
+          break;
+        }
+        try { Thread.sleep(10); } catch (InterruptedException e) { e.printStackTrace(); break; }
+      }
+    }).start();
   }
 }

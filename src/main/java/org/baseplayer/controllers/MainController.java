@@ -32,7 +32,6 @@ public class MainController {
     DrawSampleData.update.addListener((observable, oldValue, newValue) -> {
       cCanvas.draw();
       canvas.draw();
-      
       positionField.setText("Chr1:" + (int)DrawFunctions.start + " - " + (int)(DrawFunctions.end - 1));
     });
   }
