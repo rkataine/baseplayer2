@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.layout.Pane;
 import javafx.scene.shape.Line;
 
 public class DrawSampleData extends DrawFunctions {
@@ -11,9 +12,10 @@ public class DrawSampleData extends DrawFunctions {
   int LINES = 10000;
   private GraphicsContext gc;
 
-  public DrawSampleData(Canvas reactiveCanvas) {
-    super(reactiveCanvas);
+  public DrawSampleData(Canvas reactiveCanvas, Pane parent) {
+    super(reactiveCanvas, parent);
     gc = getGraphicsContext2D();
+    gc.setLineWidth(1);
     lines = new Line[LINES];
 
     for (int i = 0; i < lines.length; i++) {

@@ -18,6 +18,14 @@
       "request": "launch",
       "mainClass": "${file}"
     },
+    {
+      "type": "java",
+      "name": "Work_MainApp",
+      "request": "launch",
+      "mainClass": "org.baseplayer.MainApp",
+      "vmArgs": "--module-path C:\\LocalData\\rkataine\\javafx-sdk-21.0.2\\lib --add-modules javafx.controls,javafx.fxml",
+      "projectName": "baseplayer"
+    },
    /*  {
       "type": "java",
       "name": "MainApp",

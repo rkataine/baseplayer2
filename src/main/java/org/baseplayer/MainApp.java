@@ -2,17 +2,21 @@ package org.baseplayer;
 
 import java.io.IOException;
 import java.net.URL;
+
+import org.baseplayer.draw.DrawFunctions;
+
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 public class MainApp extends Application {
     public static Stage stage;
     static Scene scene;
-    private static boolean darkMode = false;
+    public static boolean darkMode = false;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -37,7 +41,10 @@ public class MainApp extends Application {
     public static void setDarkMode() {
         
         if (darkMode) scene.getStylesheets().remove(getResource("darkmode.css").toExternalForm());
-        else scene.getStylesheets().add(getResource("darkmode.css").toExternalForm());        
+        else scene.getStylesheets().add(getResource("darkmode.css").toExternalForm());
+        DrawFunctions.lineColor = darkMode ? DrawFunctions.lineColor = Color.BLACK : new Color(0, 1, 0, 0.5);
+        darkMode = !darkMode;
+        DrawFunctions.update.set(!DrawFunctions.update.get());
     }
     static URL getResource(String string) { return MainApp.class.getResource(string); }
     public static void main(String[] args) {

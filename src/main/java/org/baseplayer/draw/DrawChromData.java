@@ -2,15 +2,16 @@ package org.baseplayer.draw;
 
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
 import java.util.function.Function;
-public class DrawChromData extends DrawSampleData {
+public class DrawChromData extends DrawFunctions {
   private GraphicsContext gc;
 
-  public DrawChromData(Canvas reactiveCanvas) {
-    super(reactiveCanvas);
+  public DrawChromData(Canvas reactiveCanvas, Pane parent) {
+    super(reactiveCanvas, parent);
     gc = getGraphicsContext2D();
     gc.setFont(new Font("Segoe UI Regular", 8));
   }
