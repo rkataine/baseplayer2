@@ -5,8 +5,8 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
-
 import java.util.function.Function;
+
 public class DrawChromData extends DrawFunctions {
   private GraphicsContext gc;
 
@@ -19,16 +19,20 @@ public class DrawChromData extends DrawFunctions {
   Function<Double, Double> heightToScreen = height -> getHeight() * height;
  
   public void draw() {
-    gc.clearRect(0, 0, getWidth(), getHeight());
+    gc.setFill(backgroundColor);
+    gc.fillRect(0, 0, getWidth(), getHeight());
+
+    //if (MainController.isWindowResizing) { drawSnapShot(); return; }
     drawCyto();
     drawIndicators();
+    if (!animationRunning) snapshot = this.snapshot(null, null);
   }
   void drawCyto() {
     gc.setFill(Color.RED);
     gc.setStroke(Color.RED);
     double xpos = start / chromSize * getWidth();
     double width = viewLength / chromSize * getWidth();
-    gc.strokeRect(xpos, 1, width, getHeight()/10);
+    gc.strokeRect(xpos, 1, width, 10);
   }
   void drawIndicators() {
     drawIndicatorLines(10000000, "0M", 20);

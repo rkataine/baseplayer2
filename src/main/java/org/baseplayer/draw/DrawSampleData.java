@@ -2,6 +2,8 @@ package org.baseplayer.draw;
 
 import java.util.Arrays;
 import java.util.Comparator;
+
+import javafx.application.Platform;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.layout.Pane;
@@ -10,10 +12,12 @@ import javafx.scene.shape.Line;
 public class DrawSampleData extends DrawFunctions {
   private Line[] lines;
   int LINES = 10000;
+ 
   private GraphicsContext gc;
-
+  
   public DrawSampleData(Canvas reactiveCanvas, Pane parent) {
     super(reactiveCanvas, parent);
+    widthProperty().addListener((obs, oldVal, newVal) -> { resizing = true; setStartEnd(start, end); resizing = false; });
     gc = getGraphicsContext2D();
     gc.setLineWidth(1);
     lines = new Line[LINES];
@@ -23,10 +27,17 @@ public class DrawSampleData extends DrawFunctions {
       lines[i] = new Line(x, 0, x, Math.random());
     }    
     Arrays.sort(lines, Comparator.comparing(line -> line.getStartX()));
+    Platform.runLater(() -> { draw(); });
   }
-
+  
   public void draw() {
-    gc.clearRect(0, 0, getWidth(), getHeight());
+    if (resizing) { super.drawSnapShot(); return; }
+    gc.setFill(backgroundColor);
+    gc.fillRect(0, 0, getWidth()+1, getHeight()+1);
+    drawVariants();
+    
+  }
+  void drawVariants() {
     gc.setStroke(lineColor);
     gc.setFill(lineColor);
     for (Line line : lines) {
@@ -41,5 +52,6 @@ public class DrawSampleData extends DrawFunctions {
       } else gc.strokeLine(screenPos, getHeight(), screenPos, ypos);
 
     }
+    if (!animationRunning) snapshot = this.snapshot(null, null);
   }
 }

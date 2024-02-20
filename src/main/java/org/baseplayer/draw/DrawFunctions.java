@@ -9,6 +9,7 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
@@ -20,9 +21,11 @@ import javafx.scene.text.Font;
 
 public class DrawFunctions extends Canvas {
   static double chromSize = 100000000;
+  
   int minZoom = 40;
-  public static double start = 1;
   public static BooleanProperty update = new SimpleBooleanProperty(false);
+  public static double start = 1;
+  
   public static double end = chromSize + 1;
   static double viewLength = chromSize;
   static double pixelSize = 0;
@@ -31,10 +34,11 @@ public class DrawFunctions extends Canvas {
   private GraphicsContext reactivegc;
   private boolean lineZoomer = false;
   public static Color lineColor = new Color(0.5, 0.8, 0.8, 0.5);
+  public static Color backgroundColor = new Color(0.2, 0.2, 0.2, 1);
   static LinearGradient zoomColor = new LinearGradient(
     0, 0, 1, 1, true, javafx.scene.paint.CycleMethod.NO_CYCLE,
-    new Stop(0, javafx.scene.paint.Color.rgb(105, 255, 0, 0.2)),  // Red with 50% transparency
-    new Stop(1, javafx.scene.paint.Color.rgb(0, 200, 255, 0.2))   // Blue with 50% transparency
+    new Stop(0, javafx.scene.paint.Color.rgb(105, 255, 0, 0.2)),  
+    new Stop(1, javafx.scene.paint.Color.rgb(0, 200, 255, 0.2))
   );
   static Font tekstifont = new Font("Arial", 10);
   
@@ -43,26 +47,29 @@ public class DrawFunctions extends Canvas {
   static Function<Double, Integer> screenPosToChromPos = screenPos -> (int)(start + screenPos * scale);
   private double mousePressedX;
   private Canvas reactiveCanvas;
-  
   private double mouseDraggedX;
   private boolean zoomDrag;
   private double zoomFactor = 20;
-  
+  public static boolean resizing = false;
+  Image snapshot = null;
+
+  public static boolean animationRunning = false;
+
   public DrawFunctions(Canvas reactiveCanvas, Pane parent) {
     this.reactiveCanvas = reactiveCanvas;
     end = chromSize;
     gc = getGraphicsContext2D();  
     gc.setFont(Font.font("Segoe UI Regular", 12));
-    widthProperty().addListener((obs, oldVal, newVal) -> { setStartEnd(start, end); });
-    heightProperty().addListener((obs, oldVal, newVal) -> { setStartEnd(start, end); });
+    heightProperty().addListener((obs, oldVal, newVal) -> { resizing = true; update.set(!update.get()); resizing = false; });
     heightProperty().bind(parent.heightProperty());
     widthProperty().bind(parent.widthProperty());
     reactiveCanvas.heightProperty().bind(parent.heightProperty());
     reactiveCanvas.widthProperty().bind(parent.widthProperty());
     setReactiveCanvas(reactiveCanvas);
+    // Platform.runLater(() -> { setStartEnd(start, end); });
   }
   public Canvas getReactiveCanvas() { return reactiveCanvas; }
-
+  void drawSnapShot() { gc.drawImage(snapshot, 0, 0, getWidth(), getHeight()); }
   void setReactiveCanvas(Canvas reactiveCanvas) {
     
     reactivegc = reactiveCanvas.getGraphicsContext2D();
@@ -71,7 +78,8 @@ public class DrawFunctions extends Canvas {
     reactiveCanvas.setOnMousePressed(event -> mousePressedX = event.getX() );
     reactiveCanvas.setOnMouseDragged(event -> handleDrag(event));
     reactiveCanvas.setOnScroll(event -> handleScroll(event) );
-    reactiveCanvas.setOnMouseReleased(event -> { handleMouseRelease(event); });   
+    //reactiveCanvas.setOnMouseMoved(event -> { });
+    reactiveCanvas.setOnMouseReleased(event -> { handleMouseRelease(event); });
   }
   void handleScroll(ScrollEvent event) {
     event.consume();
@@ -90,7 +98,7 @@ public class DrawFunctions extends Canvas {
   }
   void handleDrag(MouseEvent event) {
     double dragX = event.getX();
-  
+    
     if (event.getButton() == MouseButton.SECONDARY) {      
       setStart(start - (dragX - mousePressedX) / pixelSize);
       mousePressedX = dragX;
@@ -101,11 +109,11 @@ public class DrawFunctions extends Canvas {
     reactivegc.setStroke(Color.WHITESMOKE);
     zoomDrag = true;
     mouseDraggedX = dragX;
-    clearReactive();
+    //clearReactive();
     if (!lineZoomer && mouseDraggedX >= mousePressedX) {
+      clearReactive();
       reactivegc.fillRect(mousePressedX, 0, mouseDraggedX-mousePressedX, getHeight());
       reactivegc.strokeRect(mousePressedX, 0, mouseDraggedX-mousePressedX, getHeight());
-
     } else {
       zoomDrag = false;
       lineZoomer = true;
@@ -114,10 +122,12 @@ public class DrawFunctions extends Canvas {
     }
   }
   void handleMouseRelease(MouseEvent event) {
+    clearReactive();
+   
     if (lineZoomer) { lineZoomer = false; return; }
     if (zoomDrag) {
       zoomDrag = false;
-      clearReactive();
+     
       if (mousePressedX > mouseDraggedX) return;
 
       double start = screenPosToChromPos.apply(mousePressedX);
@@ -125,9 +135,10 @@ public class DrawFunctions extends Canvas {
       zoomAnimation(start, end);
     }
   }
- 
+  void clearReactive(double x, double y, double width) { reactivegc.clearRect(x, y, width, getHeight()); }
   void clearReactive() { reactivegc.clearRect(0, 0, getWidth(), getHeight()); }
   void setStart(double start) {
+    
     if (start < 1) start = 1;
    
     if (start + viewLength > chromSize + 1) return;
@@ -142,7 +153,6 @@ public class DrawFunctions extends Canvas {
     if (end > chromSize) end = chromSize + 1;
     
     DrawSampleData.start = start;
-    
     DrawSampleData.end = end;
     viewLength = end - start;
     pixelSize = getWidth() / viewLength;
@@ -152,6 +162,7 @@ public class DrawFunctions extends Canvas {
   public void zoomout() { zoomAnimation(1, chromSize); };
 
   void zoom(double zoomDirection, double mousePos) {
+   
     int direction = zoomDirection > 0 ? 1 : -1;
     double pivot = mousePos / getWidth();
     double acceleration = viewLength/getWidth() * 15;
@@ -163,7 +174,9 @@ public class DrawFunctions extends Canvas {
   }
 
   void zoomAnimation(double start, double end) {
+    
     new Thread(() -> {
+      animationRunning = true;
       final DoubleProperty currentStart = new SimpleDoubleProperty(DrawFunctions.start);
       final DoubleProperty currentEnd = new SimpleDoubleProperty(DrawFunctions.end);
       int startStep = (int)(start - DrawFunctions.start)/10;
@@ -174,6 +187,7 @@ public class DrawFunctions extends Canvas {
         currentStart.set(currentStart.get() + startStep);
         currentEnd.set(currentEnd.get() - endStep);
         if ((startStep > 0 && currentStart.get() >= start) || (startStep < 0 && currentStart.get() <= start)) {
+          animationRunning = false;
           Platform.runLater(() -> { setStartEnd(start, end); });
           break;
         }
