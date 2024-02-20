@@ -27,7 +27,7 @@ public class DrawSampleData extends DrawFunctions {
       lines[i] = new Line(x, 0, x, Math.random());
     }    
     Arrays.sort(lines, Comparator.comparing(line -> line.getStartX()));
-    Platform.runLater(() -> { draw(); });
+    Platform.runLater(() -> { draw(); DrawFunctions.snapshot = this.snapshot(null, null); });
   }
   
   public void draw() {

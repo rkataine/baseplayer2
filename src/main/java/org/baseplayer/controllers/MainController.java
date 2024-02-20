@@ -39,13 +39,7 @@ public class MainController {
   public void zoomout(ActionEvent event) { ((DrawFunctions)drawCanvas.getChildren().get(0)).zoomout(); }
   Runtime instance = Runtime.getRuntime();
   IntegerProperty memoryUsage = new SimpleIntegerProperty(0);
-  //IntegerProperty memoryUsage = new IntegerProperty((int) (((instance.totalMemory() - instance.freeMemory()) / toMegabytes))); 
-  /* 
-  (int) (((instance.totalMemory() - instance.freeMemory()) / toMegabytes));
-  if ((instance.totalMemory() - instance.freeMemory()) / (double) instance.maxMemory() > 0.8) MainPane.memLabel.setForeground(Color.red);
-  else MainPane.memLabel.setForeground(Color.black);
 
-  MainPane.memLabel.setText("" + memoryUsage + " / " + (instance.maxMemory() / toMegabytes) + "MB (" + (int) (MethodLibrary.round((instance.totalMemory() - instance.freeMemory()) / (double) instance.maxMemory(), 2) * 100)	+ "%) "); */
   public void initialize() {
       
       memoryUsage.addListener((observable, oldValue, newValue) -> {
