@@ -6,6 +6,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import java.util.function.Function;
+import org.baseplayer.utils.BaseUtils;
 
 public class DrawChromData extends DrawFunctions {
   private GraphicsContext gc;
@@ -37,39 +38,55 @@ public class DrawChromData extends DrawFunctions {
     
   }
   void drawIndicators() {
-    drawIndicatorLines(10000000, "0M", 20);
+    gc.setFill(Color.LIGHTGREY);
+    gc.setStroke(Color.GREY);
+    gc.setLineWidth(1);
    
-    if (viewLength < 50000000) {
-      drawIndicatorLines(1000000, "M", 10);
-    } 
-    if (viewLength < 80000) {
-      drawIndicatorLines(10000, "0K", 7);
-    }
-    if (viewLength < 1000) {
-      drawIndicatorLines(1000, "K", 5);
-    }
-    if (viewLength < 100) {
-      drawIndicatorLines(1, "", 3);
-    }
+    String text = BaseUtils.formatNumber((int)viewLength) + " bp";
+    int textWidth = text.length() * 2;
     
-      
+    gc.strokeLine(0, getHeight()-22, getWidth()/2 - textWidth - 10, getHeight()-22);
+    gc.strokeLine(getWidth()/2 + textWidth + 10, getHeight()-22, getWidth(), getHeight()-22);
+    gc.fillText(text, getWidth()/2 - textWidth, getHeight()-20);
+
+    if (viewLength >= 40000000) drawIndicatorLines(10000000, "0M", 4, false);
+    else if (viewLength > 2000000) drawIndicatorLines(1000000, "M", 4, false);
+    else if (viewLength > 60000) drawIndicatorLines(100000, null, 4, false);
+    else if (viewLength > 10000) drawIndicatorLines(10000, null, 4, false);
+    else if (viewLength > 1000) drawIndicatorLines(1000, null, 4, false);
+    else { 
+      drawIndicatorLines(100, null, 4, false);
+      if(viewLength < 100) {
+        drawIndicatorLines(10, null, 4, false);
+        drawIndicatorLines(1, null, 4, true);
+      }
+    } 
+    if (viewLength < 100) {
+      gc.setLineDashes(2, 4);
+      int middlePos = (int)screenPosToChromPos.apply(getWidth()/2);
+      gc.strokeLine(getWidth()/2 - pixelSize/2, 0, getWidth()/2 - pixelSize/2, getHeight());
+      gc.strokeLine(getWidth()/2 + pixelSize/2, 0, getWidth()/2 + pixelSize/2, getHeight());
+      gc.fillText(""+BaseUtils.formatNumber(middlePos), getWidth()/2 - 19, getHeight()-11);
+    }
+    gc.setLineDashes(0);
   }
-  void drawIndicatorLines(int scale, String postfix, int lineheight) {
+  void drawIndicatorLines(int scale, String postfix, int lineheight, boolean skip) {
     gc.setStroke(Color.GRAY);
     gc.setFill(Color.WHITESMOKE);
     
-    double startvalue = Math.round(start / scale);
-
+    int startvalue = (int)Math.round(start / scale) * scale;
+   
     for (int i = (int)startvalue; i < chromSize; i += scale) {
       if (i < start) continue;
       if (i > end) break;
      
       double linepos = chromPosToScreenPos.apply(i * 1.0);
-  
-     // if ((firstpos+i) % scale == 0) { 
-       
-      if (lineheight > 3) gc.fillText(""+(int)(i/scale) +postfix, linepos + 4, getHeight()-(gc.getFont().getSize()/3));
-      //}
+      String text = BaseUtils.formatNumber(i);
+      if (postfix != null) 
+        text = ""+(int)(i/scale) + postfix;
+      int textWidth = (int)gc.getFont().getSize() * text.length();
+      if (!skip) gc.fillText(text.toString(), linepos - textWidth/3 , getHeight()-lineheight);
+     
       gc.strokeLine(linepos, getHeight()-lineheight, linepos, getHeight());
     }
   }

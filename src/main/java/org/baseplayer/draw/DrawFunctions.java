@@ -182,18 +182,22 @@ public class DrawFunctions extends Canvas {
       final DoubleProperty currentEnd = new SimpleDoubleProperty(DrawFunctions.end);
       int startStep = (int)(start - DrawFunctions.start)/10;
       int endStep = (int)(DrawFunctions.end - end)/10;
-     
-      while (true) {
+      boolean ended = false;
+      for(int i = 0; i < 10; i++) {
         Platform.runLater(() -> { setStartEnd(currentStart.get(), currentEnd.get()); });
         currentStart.set(currentStart.get() + startStep);
         currentEnd.set(currentEnd.get() - endStep);
         if ((startStep > 0 && currentStart.get() >= start) || (startStep < 0 && currentStart.get() <= start)) {
           animationRunning = false;
+          ended = true;
           Platform.runLater(() -> { setStartEnd(start, end); });
           break;
         }
+        
+        
         try { Thread.sleep(10); } catch (InterruptedException e) { e.printStackTrace(); break; }
       }
+      if (!ended) Platform.runLater(() -> { setStartEnd(start, end); });
     }).start();
   }
 }
