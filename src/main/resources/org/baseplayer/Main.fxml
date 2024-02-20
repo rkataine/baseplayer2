@@ -6,54 +6,49 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
+
 <?import javafx.stage.Screen?>
 <?import javafx.scene.control.Label?>
 
 <AnchorPane fx:controller="org.baseplayer.controllers.MainController" prefHeight="${screen.visualBounds.height * 0.8}" prefWidth="${screen.visualBounds.width * 0.8}" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" nodeOrientation="LEFT_TO_RIGHT" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" >
-   <fx:define>
-      <Screen fx:factory="getPrimary" fx:id="screen"/>
-   </fx:define>
-   <children>
-      <VBox layoutX="1.0" prefHeight="600.0" prefWidth="883.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="-0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-         <children>
-            <fx:include source="MenuBar.fxml" />
-            
-            <SplitPane fx:id="mainSplit" dividerPositions="0.16631726065688335" orientation="VERTICAL" prefHeight="584.0" prefWidth="883.0" VBox.vgrow="ALWAYS">
+  <fx:define>
+    <Screen fx:factory="getPrimary" fx:id="screen"/>
+  </fx:define>
+  <children>
+    <VBox layoutX="1.0" prefHeight="600.0" prefWidth="883.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="-0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <children>
+        <fx:include source="MenuBar.fxml" />
+        
+        <SplitPane fx:id="mainSplit" dividerPositions="0.16631726065688335" orientation="VERTICAL" prefHeight="584.0" prefWidth="883.0" VBox.vgrow="ALWAYS">
+          <items>
+            <AnchorPane fx:id="chromPane" minWidth="0.0" minHeight="160" maxHeight="160" prefHeight="100.0" prefWidth="160.0">
+              <SplitPane fx:id="chromSplit" dividerPositions="0.16631726065688335" orientation="HORIZONTAL" VBox.vgrow="ALWAYS"
+                      AnchorPane.topAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0">
+                  <items>
+                      <AnchorPane fx:id="chromSideBar" minWidth="160" maxWidth="160" prefHeight="100.0" prefWidth="160.0">
+                          <ComboBox fx:id="referenceComboBox" layoutX="5.0" layoutY="10.0" prefHeight="25.0" prefWidth="150.0" promptText="Homo Sapiens GRCh38" />
+                          <ComboBox fx:id="annotationComboBox" layoutX="5.0" layoutY="40.0" prefHeight="25.0" prefWidth="150.0" promptText="Ensembl genes version 104" />
+                          <Label fx:id="memLabel" text="Mem usage: " AnchorPane.bottomAnchor="10" layoutX="5.0" />
+                      </AnchorPane>
+                      <AnchorPane fx:id="chromCanvas" minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0"
+                                  AnchorPane.topAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" />
+                  </items>
+              </SplitPane>
+            </AnchorPane>
+            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0" VBox.vgrow="ALWAYS">
+              <SplitPane fx:id="drawSplit" dividerPositions="0.16631726065688335" orientation="HORIZONTAL" VBox.vgrow="ALWAYS"
+                    AnchorPane.topAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0">
                 <items>
-                    <AnchorPane fx:id="chromPane" minWidth="0.0" minHeight="160" maxHeight="160" prefHeight="100.0" prefWidth="160.0">
-                        <SplitPane fx:id="chromSplit" dividerPositions="0.16631726065688335" orientation="HORIZONTAL" VBox.vgrow="ALWAYS"
-                                AnchorPane.topAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0">
-                            <items>
-                                <AnchorPane fx:id="chromSideBar" minWidth="160" maxWidth="160" prefHeight="100.0" prefWidth="160.0">
-                                    <ComboBox fx:id="referenceComboBox" layoutX="5.0" layoutY="10.0" prefHeight="25.0" prefWidth="150.0" promptText="Homo Sapiens GRCh38" />
-                                    <ComboBox fx:id="annotationComboBox" layoutX="5.0" layoutY="40.0" prefHeight="25.0" prefWidth="150.0" promptText="Ensembl genes version 104" />
-                                    <Label fx:if="memLabel" text="Mem usage: " AnchorPane.bottomAnchor="10" layoutX="5.0" />
-                                </AnchorPane>
-                                <AnchorPane fx:id="chromCanvas" minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0"
-                                            AnchorPane.topAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" />
-                            </items>
-                        </SplitPane>
-                    </AnchorPane>
-                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0" VBox.vgrow="ALWAYS">
-                        <SplitPane fx:id="drawSplit" dividerPositions="0.16631726065688335" orientation="HORIZONTAL" VBox.vgrow="ALWAYS"
-                                AnchorPane.topAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0">
-                            <items>
-                                <AnchorPane fx:id="drawSideBar" minHeight="0.0" minWidth="160" maxWidth="160" prefHeight="100.0" prefWidth="160.0" />
-                                <AnchorPane fx:id="drawCanvas" minHeight="0.0" minWidth="160" prefHeight="100.0" prefWidth="160.0"
-                                            AnchorPane.topAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" />
-                            </items>
-                        </SplitPane>
-                    </AnchorPane>
+                    <AnchorPane fx:id="drawSideBar" minHeight="0.0" minWidth="160" maxWidth="160" prefHeight="100.0" prefWidth="160.0" />
+                    <AnchorPane fx:id="drawCanvas" minHeight="0.0" minWidth="160" prefHeight="100.0" prefWidth="160.0"
+                                AnchorPane.topAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" />
                 </items>
-            </SplitPane>
-         </children>
-      </VBox>
-      <TextField layoutX="318.0" layoutY="1.0" prefHeight="0.0" prefWidth="149.0" promptText="Search" />
-      <Button layoutX="95.0" layoutY="1.0" mnemonicParsing="false" onAction="#setDarkMode" text="Variant Manager" />
-      <ComboBox layoutX="210.0" layoutY="1.0" prefHeight="25.0" prefWidth="67.0" promptText="Chr" />
-      <TextField fx:id="positionField" editable="false" layoutX="504.0" layoutY="1.0" prefHeight="25.0" prefWidth="200.0" promptText="position" />
-      <Button layoutX="287.0" layoutY="1.0" mnemonicParsing="false" text="&lt;" />
-      <Button layoutX="473.0" layoutY="1.0" mnemonicParsing="false" text="&gt;" />
-      <Button layoutX="713.0" layoutY="1.0" mnemonicParsing="false" onAction="#zoomout" text="Zoomout" />
-   </children>
+              </SplitPane>
+            </AnchorPane>
+          </items>
+        </SplitPane>
+      </children>
+    </VBox>
+  </children>
 </AnchorPane>

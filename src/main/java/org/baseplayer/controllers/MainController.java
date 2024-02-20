@@ -1,6 +1,5 @@
 package org.baseplayer.controllers;
 
-import org.baseplayer.MainApp;
 import org.baseplayer.draw.DrawChromData;
 import org.baseplayer.draw.DrawFunctions;
 import org.baseplayer.draw.DrawSampleData;
@@ -9,7 +8,6 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
@@ -35,8 +33,7 @@ public class MainController {
 
   public static boolean dividerHovered;
   public static boolean isActive = false;
-  public void setDarkMode(ActionEvent event) { MainApp.setDarkMode(); }
-  public void zoomout(ActionEvent event) { ((DrawFunctions)drawCanvas.getChildren().get(0)).zoomout(); }
+  public static DrawSampleData canvas;
   Runtime instance = Runtime.getRuntime();
   IntegerProperty memoryUsage = new SimpleIntegerProperty(0);
 
@@ -51,7 +48,7 @@ public class MainController {
       });
 
       DrawChromData cCanvas = new DrawChromData(new Canvas(), chromCanvas);
-      DrawSampleData canvas = new DrawSampleData(new Canvas(), drawCanvas);
+      canvas = new DrawSampleData(new Canvas(), drawCanvas);
       
       chromCanvas.getChildren().addAll(cCanvas, cCanvas.getReactiveCanvas());
       
@@ -61,11 +58,11 @@ public class MainController {
         cCanvas.draw();
         canvas.draw();
         memoryUsage.set(BaseUtils.toMegabytes.apply(instance.totalMemory() - instance.freeMemory()));
-        positionField.setText("chr1:" + (int)DrawFunctions.start + " - " + (int)(DrawFunctions.end - 1));
       });      
       setWindowSizeListener();
       setSplitPaneDividerListener();
   }
+ 
   void setWindowSizeListener() {
     mainSplit.setOnMouseEntered(new EventHandler<MouseEvent>() {
       @Override

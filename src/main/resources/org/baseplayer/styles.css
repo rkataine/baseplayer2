@@ -1,5 +1,16 @@
 .split-pane *.split-pane-divider {
-   -fx-padding: 0 1 0 1;
+   -fx-padding: 0 2 0 2;
    padding: 0 1 0 1;
     -fx-background-color: #404040;
+    background-color: #404040;
+}
+.toolBar {
+    -fx-background-color: #303030;
+    background-color: #404040;
+    -fx-padding: 4 4 4 4;
+    padding: 4 4 4 4;
+}
+.menuBar {
+    -fx-padding: 4 4 4 4;
+    padding: 4 4 4 4;
 }

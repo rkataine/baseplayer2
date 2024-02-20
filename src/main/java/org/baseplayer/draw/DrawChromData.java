@@ -33,8 +33,8 @@ public class DrawChromData extends DrawFunctions {
     double xpos = start / chromSize * getWidth() + 3;
     double width = Math.max(20, viewLength / chromSize * getWidth() - 6);
     //gc.strokeRect(xpos, 1, width, 10);
-    gc.fillRoundRect(xpos, 1, width, 20, 20, 20);
-    gc.strokeRoundRect(xpos, 1, width, 20, 20, 20);
+    gc.fillRoundRect(xpos, 3, width, 20, 20, 20);
+    gc.strokeRoundRect(xpos, 3, width, 20, 20, 20);
     
   }
   void drawIndicators() {

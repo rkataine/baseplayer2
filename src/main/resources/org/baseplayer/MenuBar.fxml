@@ -10,27 +10,40 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.ToolBar?>
+<?import javafx.scene.layout.Region?>
 
-<MenuBar fx:id="menuBar" fx:controller="org.baseplayer.controllers.MenuBarController" prefWidth="883.0" VBox.vgrow="NEVER" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
-  <menus>
-    <Menu mnemonicParsing="false" text="File">
-      <items>
-          <MenuItem mnemonicParsing="false" id="LOAD_VCF" onAction="#openFileMenu" text="Open VCF file(s)" />
-          <MenuItem mnemonicParsing="false" id="LOAD_BAM" onAction="#openFileMenu" text="Open BAM file(s)" />
-          <MenuItem mnemonicParsing="false" id="LOAD_CTRL" onAction="#openFileMenu" text="Open control file(s)" />
-          <MenuItem mnemonicParsing="false" id="LOAD_BED" onAction="#openFileMenu" text="Open track file(s)" />
-          <SeparatorMenuItem mnemonicParsing="false" />
-          <MenuItem mnemonicParsing="false" id="LOAD_SES" onAction="#openFileMenu" text="Open session" />
-          <MenuItem mnemonicParsing="false" id="SAVE_SES" onAction="#openFileMenu" text="Save session" />
-          <SeparatorMenuItem mnemonicParsing="false" />
-        <MenuItem mnemonicParsing="false" text="Close" />
-      </items>
-    </Menu>
-    <Menu mnemonicParsing="false" text="Tools">
-      <items>
-        <MenuItem mnemonicParsing="false" text="Delete" />
-      </items>
-    </Menu>
+<HBox fx:controller="org.baseplayer.controllers.MenuBarController" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
+   
+  <!-- <ImageView fitHeight="20" fitWidth="20">
+      <Image url="@BasePlayer_icon.png" />
+  </ImageView> -->
+  <MenuBar fx:id="menuBar" styleClass="menuBar">
+    <menus>
+      <Menu mnemonicParsing="false" text="File">
+        <items>
+            <MenuItem mnemonicParsing="false" id="LOAD_VCF" onAction="#openFileMenu" text="Open VCF file(s)" />
+            <MenuItem mnemonicParsing="false" id="LOAD_BAM" onAction="#openFileMenu" text="Open BAM file(s)" />
+            <MenuItem mnemonicParsing="false" id="LOAD_CTRL" onAction="#openFileMenu" text="Open control file(s)" />
+            <MenuItem mnemonicParsing="false" id="LOAD_BED" onAction="#openFileMenu" text="Open track file(s)" />
+            <SeparatorMenuItem mnemonicParsing="false" />
+            <MenuItem mnemonicParsing="false" id="LOAD_SES" onAction="#openFileMenu" text="Open session" />
+            <MenuItem mnemonicParsing="false" id="SAVE_SES" onAction="#openFileMenu" text="Save session" />
+            <SeparatorMenuItem mnemonicParsing="false" />
+          <MenuItem mnemonicParsing="false" text="Close" />
+        </items>
+      </Menu>
+      <Menu mnemonicParsing="false" text="Tools">
+        <items>
+          <MenuItem mnemonicParsing="false" text="Table Browser" />
+        </items>
+      </Menu>
+      <Menu mnemonicParsing="false" text="Info">
+        <items>
+          
+        </items>
+      </Menu>
     </menus>
     <VBox.margin>
       <Insets />
@@ -38,4 +51,20 @@
     <padding>
       <Insets bottom="2.0" top="2.0" />
     </padding>
-</MenuBar>
+  </MenuBar>
+  <ToolBar HBox.hgrow="ALWAYS" styleClass="toolBar">
+    <items>
+      <Button mnemonicParsing="false" text="Variant Manager" />
+      <ComboBox fx:id="chromosomeDropdown" prefHeight="20.0" prefWidth="67.0" promptText="Chr" />
+      <Button mnemonicParsing="false" text="&lt;" />
+      <TextField prefHeight="0.0" prefWidth="149.0" promptText="Search" />
+      <Button mnemonicParsing="false" text="&gt;" />
+      <TextField fx:id="positionField" editable="false" prefHeight="20.0" prefWidth="200.0" promptText="position" />
+      <Button mnemonicParsing="false" onAction="#zoomout" text="Zoomout" />
+       <Region HBox.hgrow="ALWAYS" />
+      <Button fx:id="minimizeButton" text="_" onAction="#minimizeWindow" />
+      <Button fx:id="maximizeButton" text="[]" onAction="#maximizeWindow" />
+      <Button fx:id="closeButton" text="X" onAction="#closeWindow" />
+    </items>
+  </ToolBar>
+</HBox>

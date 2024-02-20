@@ -21,6 +21,7 @@ public class MainApp extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         stage = primaryStage;
+       
         scene = new Scene(loadFXML("Main"));       
         scene.getStylesheets().add(getResource("styles.css").toExternalForm());
         setDarkMode();       
@@ -28,8 +29,19 @@ public class MainApp extends Application {
         stage.getIcons().add(icon);
         stage.setTitle("BasePlayer 2");
         stage.setScene(scene);
-        stage.setFullScreen(false);       
+        stage.setFullScreen(false); 
+        /* stage.fullScreenProperty().addListener((observable, oldValue, newValue) -> {
+            System.out.println("Jouj");
+            if (newValue) {
+                // If entering fullscreen mode, set style to UNDECORATED
+                Platform.runLater(() -> primaryStage.initStyle(StageStyle.UNDECORATED));
+            } else {
+                // If exiting fullscreen mode, set style back to DECORATED
+                Platform.runLater(() -> primaryStage.initStyle(StageStyle.DECORATED));
+            }
+        });       */
         stage.show();
+        
     }
     private static Parent loadFXML(String fxml) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(getResource(fxml + ".fxml"));

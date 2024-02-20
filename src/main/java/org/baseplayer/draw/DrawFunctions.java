@@ -50,6 +50,7 @@ public class DrawFunctions extends Canvas {
   private double mouseDraggedX;
   private boolean zoomDrag;
   private double zoomFactor = 20;
+  public int zoomY = - 1;
   public static boolean resizing = false;
   public static Image snapshot = null;
 
@@ -112,8 +113,8 @@ public class DrawFunctions extends Canvas {
     //clearReactive();
     if (!lineZoomer && mouseDraggedX >= mousePressedX) {
       clearReactive();
-      reactivegc.fillRect(mousePressedX, 0, mouseDraggedX-mousePressedX, getHeight());
-      reactivegc.strokeRect(mousePressedX, 1, mouseDraggedX-mousePressedX, getHeight() - 2);
+      reactivegc.fillRect(mousePressedX, zoomY, mouseDraggedX-mousePressedX, getHeight());
+      reactivegc.strokeRect(mousePressedX, zoomY, mouseDraggedX-mousePressedX, getHeight() + 2);
     } else {
       zoomDrag = false;
       lineZoomer = true;
@@ -175,7 +176,6 @@ public class DrawFunctions extends Canvas {
   }
 
   void zoomAnimation(double start, double end) {
-    
     new Thread(() -> {
       animationRunning = true;
       final DoubleProperty currentStart = new SimpleDoubleProperty(DrawFunctions.start);
@@ -190,14 +190,13 @@ public class DrawFunctions extends Canvas {
         if ((startStep > 0 && currentStart.get() >= start) || (startStep < 0 && currentStart.get() <= start)) {
           animationRunning = false;
           ended = true;
-          Platform.runLater(() -> { setStartEnd(start, end); });
+          Platform.runLater(() -> setStartEnd(start, end) );
           break;
         }
         
-        
         try { Thread.sleep(10); } catch (InterruptedException e) { e.printStackTrace(); break; }
       }
-      if (!ended) Platform.runLater(() -> { setStartEnd(start, end); });
+      if (!ended) Platform.runLater(() -> setStartEnd(start, end) );
     }).start();
   }
 }
