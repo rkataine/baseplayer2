@@ -51,7 +51,7 @@ public class DrawFunctions extends Canvas {
   private boolean zoomDrag;
   private double zoomFactor = 20;
   public static boolean resizing = false;
-  Image snapshot = null;
+  public static Image snapshot = null;
 
   public static boolean animationRunning = false;
 
@@ -69,7 +69,7 @@ public class DrawFunctions extends Canvas {
     // Platform.runLater(() -> { setStartEnd(start, end); });
   }
   public Canvas getReactiveCanvas() { return reactiveCanvas; }
-  void drawSnapShot() { gc.drawImage(snapshot, 0, 0, getWidth(), getHeight()); }
+  void drawSnapShot() { if (snapshot != null) gc.drawImage(snapshot, 0, 0, getWidth(), getHeight()); }
   void setReactiveCanvas(Canvas reactiveCanvas) {
     
     reactivegc = reactiveCanvas.getGraphicsContext2D();
@@ -106,17 +106,18 @@ public class DrawFunctions extends Canvas {
     }
     
     reactivegc.setFill(zoomColor);
-    reactivegc.setStroke(Color.WHITESMOKE);
+    reactivegc.setStroke(Color.INDIANRED);
     zoomDrag = true;
     mouseDraggedX = dragX;
     //clearReactive();
     if (!lineZoomer && mouseDraggedX >= mousePressedX) {
       clearReactive();
       reactivegc.fillRect(mousePressedX, 0, mouseDraggedX-mousePressedX, getHeight());
-      reactivegc.strokeRect(mousePressedX, 0, mouseDraggedX-mousePressedX, getHeight());
+      reactivegc.strokeRect(mousePressedX, 1, mouseDraggedX-mousePressedX, getHeight() - 2);
     } else {
       zoomDrag = false;
       lineZoomer = true;
+      
       zoom(dragX - mousePressedX, mousePressedX);
       mousePressedX = dragX;
     }
@@ -150,8 +151,7 @@ public class DrawFunctions extends Canvas {
         end = start + minZoom;
     };
     if (start < 1) start = 1.0;
-    if (end > chromSize) end = chromSize + 1;
-    
+    if (end >= chromSize - 1) end = chromSize + 1;
     DrawSampleData.start = start;
     DrawSampleData.end = end;
     viewLength = end - start;
@@ -168,8 +168,9 @@ public class DrawFunctions extends Canvas {
     double acceleration = viewLength/getWidth() * 15;
     double newSize = viewLength - zoomFactor * acceleration * direction;
     if (newSize < minZoom) newSize = minZoom;
-    double start = screenPosToChromPos.apply(mousePos) - (pivot * newSize);
-    double end = start + newSize;
+    double start = Math.max(1, screenPosToChromPos.apply(mousePos) - (pivot * newSize));
+    double end = Math.min(chromSize + 1, start + newSize);
+    if (DrawFunctions.start == start && DrawFunctions.end == end) return;
     setStartEnd(start, end);
   }
 

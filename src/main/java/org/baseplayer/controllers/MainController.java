@@ -5,18 +5,21 @@ import org.baseplayer.draw.DrawChromData;
 import org.baseplayer.draw.DrawFunctions;
 import org.baseplayer.draw.DrawSampleData;
 
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.control.Label;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Region;
-
+import org.baseplayer.utils.BaseUtils;
 
 public class MainController {
   @FXML private AnchorPane drawCanvas;
@@ -28,14 +31,31 @@ public class MainController {
   @FXML private AnchorPane chromSideBar;
   @FXML private SplitPane mainSplit;
   @FXML private AnchorPane chromPane;
+  @FXML private Label memLabel;
 
   public static boolean dividerHovered;
   public static boolean isActive = false;
   public void setDarkMode(ActionEvent event) { MainApp.setDarkMode(); }
   public void zoomout(ActionEvent event) { ((DrawFunctions)drawCanvas.getChildren().get(0)).zoomout(); }
+  Runtime instance = Runtime.getRuntime();
+  IntegerProperty memoryUsage = new SimpleIntegerProperty(0);
+  //IntegerProperty memoryUsage = new IntegerProperty((int) (((instance.totalMemory() - instance.freeMemory()) / toMegabytes))); 
+  /* 
+  (int) (((instance.totalMemory() - instance.freeMemory()) / toMegabytes));
+  if ((instance.totalMemory() - instance.freeMemory()) / (double) instance.maxMemory() > 0.8) MainPane.memLabel.setForeground(Color.red);
+  else MainPane.memLabel.setForeground(Color.black);
 
+  MainPane.memLabel.setText("" + memoryUsage + " / " + (instance.maxMemory() / toMegabytes) + "MB (" + (int) (MethodLibrary.round((instance.totalMemory() - instance.freeMemory()) / (double) instance.maxMemory(), 2) * 100)	+ "%) "); */
   public void initialize() {
-         
+      
+      memoryUsage.addListener((observable, oldValue, newValue) -> {
+        int maxMem = BaseUtils.toMegabytes.apply(instance.maxMemory());
+        int proportion = (int)(BaseUtils.round((newValue.doubleValue() / maxMem), 2) * 100);
+        if (proportion > 80) memLabel.setStyle("-fx-text-fill: red;");
+        else memLabel.setStyle("-fx-text-fill: white;");
+        memLabel.setText(BaseUtils.formatNumber(newValue.intValue()) +" / " +BaseUtils.formatNumber(maxMem)  +"MB ( " +proportion +"% )" );
+      });
+
       DrawChromData cCanvas = new DrawChromData(new Canvas(), chromCanvas);
       DrawSampleData canvas = new DrawSampleData(new Canvas(), drawCanvas);
       
@@ -46,12 +66,13 @@ public class MainController {
       DrawSampleData.update.addListener((observable, oldValue, newValue) -> {
         cCanvas.draw();
         canvas.draw();
-        positionField.setText("Chr1:" + (int)DrawFunctions.start + " - " + (int)(DrawFunctions.end - 1));
+        memoryUsage.set(BaseUtils.toMegabytes.apply(instance.totalMemory() - instance.freeMemory()));
+        positionField.setText("chr1:" + (int)DrawFunctions.start + " - " + (int)(DrawFunctions.end - 1));
       });      
       setWindowSizeListener();
       setSplitPaneDividerListener();
   }
-  void setWindowSizeListener() {   
+  void setWindowSizeListener() {
     mainSplit.setOnMouseEntered(new EventHandler<MouseEvent>() {
       @Override
       public void handle(MouseEvent event) {
@@ -66,6 +87,15 @@ public class MainController {
         setWidthConstraints();
       }
     });
+    drawCanvas.setOnMouseExited(new EventHandler<MouseEvent>() {
+      @Override
+      public void handle(MouseEvent event) {  
+        takeSnapshot();
+      }
+    });
+  }
+  void takeSnapshot() {
+    DrawFunctions.snapshot = drawCanvas.snapshot(null, null);
   }
   void setSplitPaneDividerListener() {
     chromSplit.getDividers().get(0).positionProperty().addListener(new ChangeListener<Number>() {

@@ -35,7 +35,6 @@ public class DrawSampleData extends DrawFunctions {
     gc.setFill(backgroundColor);
     gc.fillRect(0, 0, getWidth()+1, getHeight()+1);
     drawVariants();
-    
   }
   void drawVariants() {
     gc.setStroke(lineColor);
@@ -50,8 +49,9 @@ public class DrawSampleData extends DrawFunctions {
         gc.fillRect(screenPos, ypos, pixelSize, getHeight() - getHeight() * line.getEndY());
        
       } else gc.strokeLine(screenPos, getHeight(), screenPos, ypos);
-
+     
     }
-    if (!animationRunning) snapshot = this.snapshot(null, null);
+    //if (!animationRunning) snapshot = this.snapshot(null, null);
   }
+
 }

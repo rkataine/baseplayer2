@@ -22,17 +22,19 @@ public class DrawChromData extends DrawFunctions {
     gc.setFill(backgroundColor);
     gc.fillRect(0, 0, getWidth(), getHeight());
 
-    //if (MainController.isWindowResizing) { drawSnapShot(); return; }
     drawCyto();
     drawIndicators();
-    if (!animationRunning) snapshot = this.snapshot(null, null);
+    
   }
   void drawCyto() {
-    gc.setFill(Color.RED);
-    gc.setStroke(Color.RED);
-    double xpos = start / chromSize * getWidth();
-    double width = viewLength / chromSize * getWidth();
-    gc.strokeRect(xpos, 1, width, 10);
+    gc.setFill(zoomColor);
+    gc.setStroke(Color.INDIANRED);
+    double xpos = start / chromSize * getWidth() + 3;
+    double width = Math.max(20, viewLength / chromSize * getWidth() - 6);
+    //gc.strokeRect(xpos, 1, width, 10);
+    gc.fillRoundRect(xpos, 1, width, 20, 20, 20);
+    gc.strokeRoundRect(xpos, 1, width, 20, 20, 20);
+    
   }
   void drawIndicators() {
     drawIndicatorLines(10000000, "0M", 20);
@@ -40,10 +42,10 @@ public class DrawChromData extends DrawFunctions {
     if (viewLength < 50000000) {
       drawIndicatorLines(1000000, "M", 10);
     } 
-    if (viewLength < 1000000) {
+    if (viewLength < 80000) {
       drawIndicatorLines(10000, "0K", 7);
     }
-    if (viewLength < 10000) {
+    if (viewLength < 1000) {
       drawIndicatorLines(1000, "K", 5);
     }
     if (viewLength < 100) {
