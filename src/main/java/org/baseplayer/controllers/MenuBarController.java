@@ -3,8 +3,11 @@ package org.baseplayer.controllers;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
+
+import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.stage.Window;
@@ -20,10 +23,27 @@ import java.io.File;
 public class MenuBarController {
     @FXML
     private TextField positionField;
+    @FXML
+    private HBox topBar;
+    @FXML
+    private MenuBar menuBar;
     public void initialize() {
         DrawSampleData.update.addListener((observable, oldValue, newValue) -> {
             positionField.setText("chr1:" + (int)DrawFunctions.start + " - " + (int)(DrawFunctions.end - 1));
         });
+
+        menuBar.widthProperty().addListener((observable, oldValue, newValue) -> {
+            // This block will be executed whenever the width of the topBar changes
+            menuBar.setMinWidth(newValue.doubleValue());
+            menuBar.setMaxWidth(newValue.doubleValue());
+        });
+        /* Platform.runLater(() -> {
+            topBar.setMinWidth(newValue);
+            topBar.setMaxWidth(newValue);
+            topBar.setMinHeight(topBar.prefHeight(-1));
+            topBar.setMaxHeight(topBar.prefHeight(-1));
+        }); */
+      
     }
     public void openFileMenu(ActionEvent event) {
         MenuItem menuItem = (MenuItem) event.getSource();
@@ -33,10 +53,11 @@ public class MenuBarController {
         FileDialog fileDialog = new FileDialog(menuItem.getText(), types[1], types[0], multiSelect);
         
         List<File> files = fileDialog.chooseFiles();
-        System.out.println(files);
+        //files.clear();
     }
     public void setDarkMode(ActionEvent event) { MainApp.setDarkMode(); }
     public void zoomout(ActionEvent event) { MainController.canvas.zoomout(); }
+    public void cleanMemory(ActionEvent event) { System.gc(); }
 
     @FXML private Button minimizeButton;
     @FXML private Button maximizeButton;
@@ -57,6 +78,8 @@ public class MenuBarController {
             if (stage.isMaximized()) {
                 Stage newStage = new Stage(StageStyle.DECORATED);
                 newStage.setScene(MainApp.stage.getScene());
+                newStage.getIcons().add(MainApp.icon);
+                newStage.setTitle("BasePlayer 2");
                 MainApp.stage.close();
                 MainApp.stage = newStage;
                 MainApp.stage.show();

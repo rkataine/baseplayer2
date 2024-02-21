@@ -41,7 +41,7 @@
                     AnchorPane.topAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0">
                 <items>
                     <AnchorPane fx:id="drawSideBar" minHeight="0.0" minWidth="160" maxWidth="160" prefHeight="100.0" prefWidth="160.0" />
-                    <AnchorPane fx:id="drawCanvas" minHeight="0.0" minWidth="160" prefHeight="100.0" prefWidth="160.0"
+                    <AnchorPane fx:id="drawCanvas" minHeight="0.0" minWidth="0" prefHeight="100.0" prefWidth="160.0"
                                 AnchorPane.topAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" />
                 </items>
               </SplitPane>

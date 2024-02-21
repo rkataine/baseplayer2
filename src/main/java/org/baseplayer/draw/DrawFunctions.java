@@ -31,7 +31,7 @@ public class DrawFunctions extends Canvas {
   static double pixelSize = 0;
   static double scale = 0;
   private GraphicsContext gc;
-  private GraphicsContext reactivegc;
+  public GraphicsContext reactivegc;
   private boolean lineZoomer = false;
   public static Color lineColor = new Color(0.5, 0.8, 0.8, 0.5);
   public static Color backgroundColor = new Color(0.2, 0.2, 0.2, 1);
@@ -76,7 +76,7 @@ public class DrawFunctions extends Canvas {
     reactivegc = reactiveCanvas.getGraphicsContext2D();
    
     reactiveCanvas.setOnMouseClicked(event -> { });
-    reactiveCanvas.setOnMousePressed(event -> mousePressedX = event.getX() );
+    reactiveCanvas.setOnMousePressed(event -> { mousePressedX = event.getX(); } );
     reactiveCanvas.setOnMouseDragged(event -> handleDrag(event));
     reactiveCanvas.setOnScroll(event -> handleScroll(event) );
     //reactiveCanvas.setOnMouseMoved(event -> { });

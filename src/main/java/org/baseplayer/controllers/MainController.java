@@ -68,6 +68,7 @@ public class MainController {
       @Override
       public void handle(MouseEvent event) {
         isActive = true;
+        DrawFunctions.update.set(!DrawFunctions.update.get());
         setWidthConstraints();
       }
     });
@@ -82,6 +83,12 @@ public class MainController {
       @Override
       public void handle(MouseEvent event) {  
         takeSnapshot();
+      }
+    });
+    drawCanvas.setOnMouseEntered(new EventHandler<MouseEvent>() {
+      @Override
+      public void handle(MouseEvent event) {  
+        DrawFunctions.update.set(!DrawFunctions.update.get());
       }
     });
   }
