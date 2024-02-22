@@ -27,8 +27,8 @@
                       AnchorPane.topAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0">
                   <items>
                       <AnchorPane fx:id="chromSideBar" minWidth="160" maxWidth="160" prefHeight="100.0" prefWidth="160.0">
-                          <ComboBox fx:id="referenceComboBox" layoutX="5.0" layoutY="10.0" prefHeight="25.0" prefWidth="150.0" promptText="Homo Sapiens GRCh38" />
-                          <ComboBox fx:id="annotationComboBox" layoutX="5.0" layoutY="40.0" prefHeight="25.0" prefWidth="150.0" promptText="Ensembl genes version 104" />
+                          <ComboBox fx:id="referenceComboBox" layoutX="5.0" layoutY="10.0" prefHeight="25.0" prefWidth="150.0" styleClass="flat-combo-box" promptText="Homo Sapiens GRCh38" />
+                          <ComboBox fx:id="annotationComboBox" layoutX="5.0" layoutY="40.0" prefHeight="25.0" prefWidth="150.0"  styleClass="flat-combo-box" promptText="Ensembl genes version 104" />
                           <Label fx:id="memLabel" text="Mem usage: " AnchorPane.bottomAnchor="10" layoutX="5.0" />
                       </AnchorPane>
                       <AnchorPane fx:id="chromCanvas" minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0"

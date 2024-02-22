@@ -20,12 +20,11 @@ import javafx.scene.paint.Stop;
 import javafx.scene.text.Font;
 
 public class DrawFunctions extends Canvas {
-  static double chromSize = 100000000;
+  public static double chromSize = 100000000;
   
-  int minZoom = 40;
+  static int minZoom = 40;
   public static BooleanProperty update = new SimpleBooleanProperty(false);
   public static double start = 1;
-  
   public static double end = chromSize + 1;
   static double viewLength = chromSize;
   static double pixelSize = 0;
@@ -49,7 +48,7 @@ public class DrawFunctions extends Canvas {
   private Canvas reactiveCanvas;
   private double mouseDraggedX;
   private boolean zoomDrag;
-  private double zoomFactor = 20;
+  public static double zoomFactor = 20;
   public int zoomY = - 1;
   public static boolean resizing = false;
   public static Image snapshot = null;
@@ -134,7 +133,7 @@ public class DrawFunctions extends Canvas {
 
       double start = screenPosToChromPos.apply(mousePressedX);
       double end = screenPosToChromPos.apply(mouseDraggedX);
-      zoomAnimation(start, end);
+      zoomAnimation(start, end, this);
     }
   }
   void clearReactive(double x, double y, double width) { reactivegc.clearRect(x, y, width, getHeight()); }
@@ -160,7 +159,7 @@ public class DrawFunctions extends Canvas {
     scale = viewLength / getWidth();
     update.set(!update.get());
   }
-  public void zoomout() { zoomAnimation(1, chromSize); };
+  void zoomout() { zoomAnimation(1, chromSize, this); };
 
   void zoom(double zoomDirection, double mousePos) {
    
@@ -175,7 +174,7 @@ public class DrawFunctions extends Canvas {
     setStartEnd(start, end);
   }
 
-  void zoomAnimation(double start, double end) {
+  public static void zoomAnimation(double start, double end, DrawFunctions canvas) {
     new Thread(() -> {
       animationRunning = true;
       final DoubleProperty currentStart = new SimpleDoubleProperty(DrawFunctions.start);
@@ -184,19 +183,19 @@ public class DrawFunctions extends Canvas {
       int endStep = (int)(DrawFunctions.end - end)/10;
       boolean ended = false;
       for(int i = 0; i < 10; i++) {
-        Platform.runLater(() -> { setStartEnd(currentStart.get(), currentEnd.get()); });
+        Platform.runLater(() -> { canvas.setStartEnd(currentStart.get(), currentEnd.get()); });
         currentStart.set(currentStart.get() + startStep);
         currentEnd.set(currentEnd.get() - endStep);
         if ((startStep > 0 && currentStart.get() >= start) || (startStep < 0 && currentStart.get() <= start)) {
           animationRunning = false;
           ended = true;
-          Platform.runLater(() -> setStartEnd(start, end) );
+          Platform.runLater(() -> canvas.setStartEnd(start, end) );
           break;
         }
         
         try { Thread.sleep(10); } catch (InterruptedException e) { e.printStackTrace(); break; }
       }
-      if (!ended) Platform.runLater(() -> setStartEnd(start, end) );
+      if (!ended) Platform.runLater(() -> canvas.setStartEnd(start, end) );
     }).start();
   }
 }

@@ -12,7 +12,7 @@ import javafx.scene.shape.Line;
 
 public class DrawSampleData extends DrawFunctions {
   private Line[] lines;
-  int LINES = 10000;
+  int LINES = 1000;
  
   private GraphicsContext gc;
   private Line selectedLine;

@@ -11,6 +11,20 @@
     padding: 4 4 4 4;
 }
 .menuBar {
-    -fx-padding: 4 4 4 4;
+    -fx-padding: 5 5 5 5;
     padding: 4 4 4 4;
+}
+
+.flat-combo-box .list-cell {
+    -fx-padding: 4px;
+    padding: 4px;
+}
+
+.flat-combo-box {
+    -fx-background-color: -fx-box-border, -fx-control-inner-background;
+    background-color: -fx-box-border, -fx-control-inner-background;
+    -fx-background-insets: 0, 1;
+    -fx-padding: 1;
+    padding: 1;
+  
 }

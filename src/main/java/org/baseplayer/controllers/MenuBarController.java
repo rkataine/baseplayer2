@@ -56,7 +56,7 @@ public class MenuBarController {
         //files.clear();
     }
     public void setDarkMode(ActionEvent event) { MainApp.setDarkMode(); }
-    public void zoomout(ActionEvent event) { MainController.canvas.zoomout(); }
+    public void zoomout(ActionEvent event) { MainController.zoomout(); }
     public void cleanMemory(ActionEvent event) { System.gc(); }
 
     @FXML private Button minimizeButton;

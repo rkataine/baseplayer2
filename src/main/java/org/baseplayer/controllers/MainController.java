@@ -33,12 +33,12 @@ public class MainController {
 
   public static boolean dividerHovered;
   public static boolean isActive = false;
-  public static DrawSampleData canvas;
+  public static AnchorPane staticDraw;
   Runtime instance = Runtime.getRuntime();
   IntegerProperty memoryUsage = new SimpleIntegerProperty(0);
 
   public void initialize() {
-      
+      staticDraw = drawCanvas;
       memoryUsage.addListener((observable, oldValue, newValue) -> {
         int maxMem = BaseUtils.toMegabytes.apply(instance.maxMemory());
         int proportion = (int)(BaseUtils.round((newValue.doubleValue() / maxMem), 2) * 100);
@@ -48,10 +48,9 @@ public class MainController {
       });
 
       DrawChromData cCanvas = new DrawChromData(new Canvas(), chromCanvas);
-      canvas = new DrawSampleData(new Canvas(), drawCanvas);
+      DrawSampleData canvas = new DrawSampleData(new Canvas(), drawCanvas);
       
       chromCanvas.getChildren().addAll(cCanvas, cCanvas.getReactiveCanvas());
-      
       drawCanvas.getChildren().addAll(canvas, canvas.getReactiveCanvas());
       
       DrawSampleData.update.addListener((observable, oldValue, newValue) -> {
@@ -62,7 +61,9 @@ public class MainController {
       setWindowSizeListener();
       setSplitPaneDividerListener();
   }
- 
+  public static void zoomout() {
+    DrawFunctions.zoomAnimation(1, DrawFunctions.chromSize, (DrawFunctions)staticDraw.getChildren().get(0));
+  }
   void setWindowSizeListener() {
     mainSplit.setOnMouseEntered(new EventHandler<MouseEvent>() {
       @Override
