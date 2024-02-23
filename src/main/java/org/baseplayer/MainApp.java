@@ -4,8 +4,12 @@ import java.io.IOException;
 import java.net.URL;
 
 import org.baseplayer.draw.DrawFunctions;
+
+import javafx.animation.Animation;
 import javafx.animation.FadeTransition;
+import javafx.animation.KeyFrame;
 import javafx.animation.PauseTransition;
+import javafx.animation.Timeline;
 import javafx.animation.TranslateTransition;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -33,6 +37,7 @@ public class MainApp extends Application {
     static Scene scene;
     public static boolean darkMode = false;
     public static Image icon;
+    Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(0.1), e -> stage.setOpacity(1)));
     @Override
     public void start(Stage primaryStage) throws Exception {
         icon = new Image(getResource("BasePlayer_icon.png").toString());
@@ -40,11 +45,29 @@ public class MainApp extends Application {
         PauseTransition delay = new PauseTransition(Duration.seconds(1));
         delay.setOnFinished(event -> { showMainStage(primaryStage); });
         delay.play();
-        //showMainStage(primaryStage);
+        primaryStage.xProperty().addListener((obs, oldVal, newVal) -> {
+             if (timeline.getStatus() == Animation.Status.RUNNING)
+                timeline.stop();
+            
+            stage.setOpacity(0.6);
+            // Start the Timeline
+            timeline.playFromStart();
+        });
+        
+        primaryStage.yProperty().addListener((obs, oldVal, newVal) -> {
+            if (timeline.getStatus() == Animation.Status.RUNNING)
+                timeline.stop();
+                
+            
+            stage.setOpacity(0.6);
+            // Start the Timeline
+            timeline.playFromStart();
+        });
     }
    
     void showShplashScreen() {
         splashStage = new Stage();
+        splashStage.setOpacity(0.85);
         splashStage.initStyle(StageStyle.UNDECORATED);
         splashStage.getIcons().add(icon);
         ImageView imageView = new ImageView(icon);

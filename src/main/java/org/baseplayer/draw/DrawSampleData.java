@@ -64,6 +64,7 @@ public class DrawSampleData extends DrawFunctions {
     Platform.runLater(() -> { draw(); });
   }
   void drawSnapShot() { if (snapshot != null) gc.drawImage(snapshot, 0, 0, getWidth(), getHeight()); }
+  @Override
   public void draw() {
     //if (resizing) { drawSnapShot(); return; }
     gc.setFill(backgroundColor);

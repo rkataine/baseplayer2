@@ -22,8 +22,9 @@ public class DrawChromData extends DrawFunctions {
   }
 
   Function<Double, Double> heightToScreen = height -> getHeight() * height;
- 
+  @Override
   public void draw() {
+    
     gc.setFill(backgroundColor);
     gc.fillRect(0, 0, getWidth(), getHeight());
    

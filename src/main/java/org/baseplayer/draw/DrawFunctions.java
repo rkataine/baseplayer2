@@ -58,16 +58,18 @@ public class DrawFunctions extends Canvas {
     this.drawStack = drawStack;
     gc = getGraphicsContext2D();  
     gc.setFont(Font.font("Segoe UI Regular", 12));
-    parent.heightProperty().addListener((obs, oldVal, newVal) -> { resizing = true; update.set(!update.get()); resizing = false; });
     heightProperty().bind(parent.heightProperty());
     widthProperty().bind(parent.widthProperty());
+    reactiveCanvas.heightProperty().bind(parent.heightProperty());
+    reactiveCanvas.widthProperty().bind(parent.widthProperty());
     parent.widthProperty().addListener((obs, oldVal, newVal) -> { 
       resizing = true; update.set(!update.get()); resizing = false;
     });
     reactiveCanvas.setOnMouseEntered(event -> { MainController.hoverStack = drawStack; resizing = true; update.set(!update.get()); resizing = false; });
+
+    parent.heightProperty().addListener((obs, oldVal, newVal) -> { resizing = true; update.set(!update.get()); resizing = false; });
    
-    reactiveCanvas.heightProperty().bind(parent.heightProperty());
-    reactiveCanvas.widthProperty().bind(parent.widthProperty());
+   
     setReactiveCanvas(reactiveCanvas);
     // Platform.runLater(() -> { setStartEnd(drawStack.start, end); });
   }

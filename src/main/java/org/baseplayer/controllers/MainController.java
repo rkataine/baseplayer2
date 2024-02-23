@@ -29,9 +29,10 @@ public class MainController {
   @FXML private AnchorPane drawSideBar;
   @FXML private AnchorPane chromSideBar;
   @FXML private SplitPane mainSplit;
+  @FXML private AnchorPane chromPane;
 
   @FXML private Label memLabel;
-  public static SplitPane chromPane;
+  public static SplitPane chromSplitPane;
   public static SplitPane drawPane;
   public static boolean dividerHovered;
   public static boolean isActive = false;
@@ -42,51 +43,40 @@ public class MainController {
   public static ArrayList<DrawStack> drawStacks = new ArrayList<DrawStack>(); 
    
   public void initialize() {
-      chromPane = chromCanvas;
+      chromSplitPane = chromCanvas;
       drawPane = drawCanvas;
 
-      memoryUsage.addListener((observable, oldValue, newValue) -> {
-        int maxMem = BaseUtils.toMegabytes.apply(instance.maxMemory());
-        int proportion = (int)(BaseUtils.round((newValue.doubleValue() / maxMem), 2) * 100);
-        if (proportion > 80) memLabel.setStyle("-fx-text-fill: red;");
-        else memLabel.setStyle("-fx-text-fill: white;");
-        memLabel.setText(BaseUtils.formatNumber(newValue.intValue()) +" / " +BaseUtils.formatNumber(maxMem)  +"MB ( " +proportion +"% )" );
-      });
+      
 
       addStack(true);  
-      
-      DrawSampleData.update.addListener((observable, oldValue, newValue) -> {
-       
-        if (DrawFunctions.resizing) {
-          for (DrawStack pane : drawStacks) {
-            pane.chromCanvas.draw();
-            pane.drawCanvas.draw();
-          }
-        }
-        if (hoverStack != null) {
-          hoverStack.chromCanvas.draw();
-          hoverStack.drawCanvas.draw();
-        }
-       
-        memoryUsage.set(BaseUtils.toMegabytes.apply(instance.totalMemory() - instance.freeMemory()));
-      });      
+      addMemUpdateListener();
+      addUpdateListener();
       setWindowSizeListener();
       setSplitPaneDividerListener();
   }
   public static void zoomout() {
     hoverStack.drawCanvas.zoomAnimation(1, hoverStack.chromSize);
   }
+  void addMemUpdateListener() {
+    memoryUsage.addListener((observable, oldValue, newValue) -> {
+      int maxMem = BaseUtils.toMegabytes.apply(instance.maxMemory());
+      int proportion = (int)(BaseUtils.round((newValue.doubleValue() / maxMem), 2) * 100);
+      if (proportion > 80) memLabel.setStyle("-fx-text-fill: red;");
+      else memLabel.setStyle("-fx-text-fill: white;");
+      memLabel.setText(BaseUtils.formatNumber(newValue.intValue()) +" / " +BaseUtils.formatNumber(maxMem)  +"MB ( " +proportion +"% )" );
+    });
+  }
   public static void addStack(boolean add) {
     if (add) {
       DrawStack drawStack = new DrawStack();    
       drawStacks.add(drawStack);
-      chromPane.getItems().add(drawStack.chromStack);
+      chromSplitPane.getItems().add(drawStack.chromStack);
       drawPane.getItems().add(drawStack.drawStack);
     } else {
       if (drawStacks.size() < 2) return;
       drawStacks.removeLast();
       drawPane.getItems().removeLast();
-      chromPane.getItems().removeLast();
+      chromSplitPane.getItems().removeLast();
     }
     setDividerListeners();
     double[] drawPositions = new double[drawPane.getItems().size() - 1];
@@ -94,8 +84,25 @@ public class MainController {
       drawPositions[i] = (i + 1) / (double)drawStacks.size();
     }
     drawPane.setDividerPositions(drawPositions);
-    chromPane.setDividerPositions(drawPositions);
+    chromSplitPane.setDividerPositions(drawPositions);
   
+  }
+  void addUpdateListener() {
+    DrawSampleData.update.addListener((observable, oldValue, newValue) -> {
+       
+      if (DrawFunctions.resizing) {
+        for (DrawStack pane : drawStacks) {
+          pane.chromCanvas.draw();
+          pane.drawCanvas.draw();
+        }
+      }
+      if (hoverStack != null) {
+        hoverStack.chromCanvas.draw();
+        hoverStack.drawCanvas.draw();
+      }
+     
+      memoryUsage.set(BaseUtils.toMegabytes.apply(instance.totalMemory() - instance.freeMemory()));
+    });
   }
   void setWindowSizeListener() {
     mainSplit.setOnMouseEntered(new EventHandler<MouseEvent>() {
@@ -130,15 +137,15 @@ public class MainController {
     drawPane.getDividers().forEach(divider -> {
       divider.positionProperty().addListener((obs, oldVal, newVal) -> {
           int index = drawPane.getDividers().indexOf(divider);
-          if (index < chromPane.getDividers().size()) {
-            chromPane.getDividers().get(index).setPosition(newVal.doubleValue());
+          if (index < chromSplitPane.getDividers().size()) {
+            chromSplitPane.getDividers().get(index).setPosition(newVal.doubleValue());
           }
       });
     });
   
-    chromPane.getDividers().forEach(divider -> {
+    chromSplitPane.getDividers().forEach(divider -> {
         divider.positionProperty().addListener((obs, oldVal, newVal) -> {
-            int index = chromPane.getDividers().indexOf(divider);
+            int index = chromSplitPane.getDividers().indexOf(divider);
             if (index < drawPane.getDividers().size()) {
               drawPane.getDividers().get(index).setPosition(newVal.doubleValue());
             }
