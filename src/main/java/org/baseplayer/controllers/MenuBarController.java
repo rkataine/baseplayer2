@@ -1,62 +1,45 @@
 package org.baseplayer.controllers;
 
+import org.baseplayer.MainApp;
+import org.baseplayer.draw.DrawSampleData;
+import org.baseplayer.io.FileDialog;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
-
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.stage.Window;
 
-import java.util.List;
-import org.baseplayer.MainApp;
-import org.baseplayer.draw.DrawFunctions;
-import org.baseplayer.draw.DrawSampleData;
-import org.baseplayer.io.FileDialog;
-
-import java.io.File;
-
 public class MenuBarController {
-    @FXML
-    private TextField positionField;
-    @FXML
-    private HBox topBar;
-    @FXML
-    private MenuBar menuBar;
+    @FXML private TextField positionField;
+    @FXML private HBox topBar;
+    @FXML private MenuBar menuBar;
+
     public void initialize() {
         DrawSampleData.update.addListener((observable, oldValue, newValue) -> {
-            positionField.setText("chr1:" + (int)DrawFunctions.start + " - " + (int)(DrawFunctions.end - 1));
+            if(MainController.hoverStack == null) return;
+            positionField.setText("chr1:" + (int)MainController.hoverStack.start + " - " + (int)(MainController.hoverStack.end - 1));
         });
-
         menuBar.widthProperty().addListener((observable, oldValue, newValue) -> {
-            // This block will be executed whenever the width of the topBar changes
             menuBar.setMinWidth(newValue.doubleValue());
             menuBar.setMaxWidth(newValue.doubleValue());
         });
-        /* Platform.runLater(() -> {
-            topBar.setMinWidth(newValue);
-            topBar.setMaxWidth(newValue);
-            topBar.setMinHeight(topBar.prefHeight(-1));
-            topBar.setMaxHeight(topBar.prefHeight(-1));
-        }); */
-      
     }
     public void openFileMenu(ActionEvent event) {
         MenuItem menuItem = (MenuItem) event.getSource();
         String[] types = menuItem.getId().split("_");
         String filtertype = types[1];
         boolean multiSelect = filtertype.equals("SES") ? false : true; // TODO myöhemmin kun avataan bam tai vcf trackille, refactoroi toimimaan myös sille
-        FileDialog fileDialog = new FileDialog(menuItem.getText(), types[1], types[0], multiSelect);
-        
-        List<File> files = fileDialog.chooseFiles();
-        //files.clear();
+        /* FileDialog fileDialog =  */new FileDialog(menuItem.getText(), types[1], types[0], multiSelect);
     }
+    public void addStack(ActionEvent event) { MainController.addStack(true); }
+    public void removeStack(ActionEvent event) { MainController.addStack(false); }
     public void setDarkMode(ActionEvent event) { MainApp.setDarkMode(); }
-    public void zoomout(ActionEvent event) { MainController.canvas.zoomout(); }
+    public void zoomout(ActionEvent event) { MainController.zoomout(); }
     public void cleanMemory(ActionEvent event) { System.gc(); }
 
     @FXML private Button minimizeButton;

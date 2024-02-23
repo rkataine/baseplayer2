@@ -32,3 +32,14 @@
   -fx-background-color: #404040;
   background-color: #404040;
 }
+.tool-bar .button {
+  -fx-background-color: #202020;
+  background-color: #202020;
+  -fx-border-color: transparent;
+  border-color: transparent;
+  -fx-text-fill: white;
+}
+.tool-bar .button:hover {
+  -fx-background-color: #404040;
+  background-color: #404040;
+}

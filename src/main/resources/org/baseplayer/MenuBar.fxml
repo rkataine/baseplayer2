@@ -53,16 +53,16 @@
   <ToolBar HBox.hgrow="ALWAYS" styleClass="toolBar">
     <items>
       <Button text="Variant Manager" />
-      <ComboBox fx:id="chromosomeDropdown" prefHeight="20.0" prefWidth="67.0" promptText="Chr" />
-      <Button text="&lt;" />
+      <ComboBox fx:id="chromosomeDropdown" styleClass="flat-combo-box" prefHeight="20.0" prefWidth="67.0" promptText="Chr1" />
+      <Button onAction="#removeStack" text="&lt;" />
       <TextField prefHeight="0.0" prefWidth="149.0" promptText="Search" />
-      <Button text="&gt;" />
+      <Button onAction="#addStack" text="&gt;" />
       <TextField fx:id="positionField" editable="false" prefHeight="20.0" prefWidth="200.0" promptText="position" />
       <Button onAction="#zoomout" text="Zoomout" />
        <Region HBox.hgrow="ALWAYS" />
-      <Button fx:id="minimizeButton" text="_" onAction="#minimizeWindow" />
-      <Button fx:id="maximizeButton" text="[]" onAction="#maximizeWindow" />
-      <Button fx:id="closeButton" text="X" onAction="#closeWindow" />
+      <Button fx:id="minimizeButton" text=" _ " onAction="#minimizeWindow" />
+      <Button fx:id="maximizeButton" text="[  ]" onAction="#maximizeWindow" />
+      <Button fx:id="closeButton" text=" X " onAction="#closeWindow" />
     </items>
   </ToolBar>
 </HBox>

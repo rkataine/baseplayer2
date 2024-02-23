@@ -2,6 +2,8 @@ package org.baseplayer.draw;
 
 import java.util.function.Function;
 
+import org.baseplayer.controllers.MainController;
+
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
@@ -9,27 +11,21 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.image.Image;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
-import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.Stop;
 import javafx.scene.text.Font;
 
 public class DrawFunctions extends Canvas {
-  static double chromSize = 100000000;
-  
-  int minZoom = 40;
+  //private Pane parent;
+  public DrawStack drawStack;
+  static int minZoom = 40;
   public static BooleanProperty update = new SimpleBooleanProperty(false);
-  public static double start = 1;
-  
-  public static double end = chromSize + 1;
-  static double viewLength = chromSize;
-  static double pixelSize = 0;
-  static double scale = 0;
+ 
   private GraphicsContext gc;
   public GraphicsContext reactivegc;
   private boolean lineZoomer = false;
@@ -42,35 +38,47 @@ public class DrawFunctions extends Canvas {
   );
   static Font tekstifont = new Font("Arial", 10);
   
-  static Function<Double, Double> chromPosToScreenPos = chromPos -> (chromPos - start) * pixelSize;
+  Function<Double, Double> chromPosToScreenPos = chromPos -> (chromPos - drawStack.start) * drawStack.pixelSize;
   Function<Double, Double> heightToScreen = height -> getHeight() * height;
-  static Function<Double, Integer> screenPosToChromPos = screenPos -> (int)(start + screenPos * scale);
+  Function<Double, Integer> screenPosToChromPos = screenPos -> (int)(drawStack.start + screenPos * drawStack.scale);
   private double mousePressedX;
   private Canvas reactiveCanvas;
   private double mouseDraggedX;
   private boolean zoomDrag;
-  private double zoomFactor = 20;
+  public static double zoomFactor = 20;
   public int zoomY = - 1;
+ 
+
   public static boolean resizing = false;
-  public static Image snapshot = null;
 
   public static boolean animationRunning = false;
 
-  public DrawFunctions(Canvas reactiveCanvas, Pane parent) {
+  public DrawFunctions(Canvas reactiveCanvas, StackPane parent, DrawStack drawStack) {
     this.reactiveCanvas = reactiveCanvas;
-    end = chromSize;
+    this.drawStack = drawStack;
     gc = getGraphicsContext2D();  
     gc.setFont(Font.font("Segoe UI Regular", 12));
-    heightProperty().addListener((obs, oldVal, newVal) -> { resizing = true; update.set(!update.get()); resizing = false; });
+    parent.heightProperty().addListener((obs, oldVal, newVal) -> { resizing = true; update.set(!update.get()); resizing = false; });
     heightProperty().bind(parent.heightProperty());
     widthProperty().bind(parent.widthProperty());
+    parent.widthProperty().addListener((obs, oldVal, newVal) -> { 
+      resizing = true; update.set(!update.get()); resizing = false;
+    });
+    reactiveCanvas.setOnMouseEntered(event -> { MainController.hoverStack = drawStack; resizing = true; update.set(!update.get()); resizing = false; });
+   
     reactiveCanvas.heightProperty().bind(parent.heightProperty());
     reactiveCanvas.widthProperty().bind(parent.widthProperty());
     setReactiveCanvas(reactiveCanvas);
-    // Platform.runLater(() -> { setStartEnd(start, end); });
+    // Platform.runLater(() -> { setStartEnd(drawStack.start, end); });
+  }
+  void draw() {
+    if (MainController.drawStacks.size() > 1 && drawStack.equals(MainController.hoverStack)) {
+      gc.setStroke(Color.WHITESMOKE);
+      gc.strokeRect(1, -1, getWidth()-2, getHeight()+2);
+    }
   }
   public Canvas getReactiveCanvas() { return reactiveCanvas; }
-  void drawSnapShot() { if (snapshot != null) gc.drawImage(snapshot, 0, 0, getWidth(), getHeight()); }
+  
   void setReactiveCanvas(Canvas reactiveCanvas) {
     
     reactivegc = reactiveCanvas.getGraphicsContext2D();
@@ -92,16 +100,16 @@ public class DrawFunctions extends Canvas {
         zoom(zoomFactor, mousePos);
     } else {
         // Scroll
-        double acceleration = viewLength/getWidth() * 2;
+        double acceleration = drawStack.viewLength/getWidth() * 2;
         double xPos = event.getDeltaX() * acceleration;
-        setStart(start - xPos);
+        setStart(drawStack.start - xPos);
     }
   }
   void handleDrag(MouseEvent event) {
     double dragX = event.getX();
     
     if (event.getButton() == MouseButton.SECONDARY) {      
-      setStart(start - (dragX - mousePressedX) / pixelSize);
+      setStart(drawStack.start - (dragX - mousePressedX) / drawStack.pixelSize);
       mousePressedX = dragX;
       return;
     }
@@ -143,8 +151,8 @@ public class DrawFunctions extends Canvas {
     
     if (start < 1) start = 1;
    
-    if (start + viewLength > chromSize + 1) return;
-    setStartEnd(start, start+viewLength);
+    if (start + drawStack.viewLength > drawStack.chromSize + 1) return;
+    setStartEnd(start, start+drawStack.viewLength);
   }
   void setStartEnd(Double start, double end) {
     if (end - start < minZoom) {
@@ -152,36 +160,36 @@ public class DrawFunctions extends Canvas {
         end = start + minZoom;
     };
     if (start < 1) start = 1.0;
-    if (end >= chromSize - 1) end = chromSize + 1;
-    DrawSampleData.start = start;
-    DrawSampleData.end = end;
-    viewLength = end - start;
-    pixelSize = getWidth() / viewLength;
-    scale = viewLength / getWidth();
+    if (end >= drawStack.chromSize - 1) end = drawStack.chromSize + 1;
+    drawStack.start = start;
+    drawStack.end = end;
+    drawStack.viewLength = end - start;
+    drawStack.pixelSize = getWidth() / drawStack.viewLength;
+    drawStack.scale = drawStack.viewLength / getWidth();
     update.set(!update.get());
   }
-  public void zoomout() { zoomAnimation(1, chromSize); };
+  void zoomout() { zoomAnimation(1, drawStack.chromSize ); };
 
   void zoom(double zoomDirection, double mousePos) {
    
     int direction = zoomDirection > 0 ? 1 : -1;
     double pivot = mousePos / getWidth();
-    double acceleration = viewLength/getWidth() * 15;
-    double newSize = viewLength - zoomFactor * acceleration * direction;
+    double acceleration = drawStack.viewLength/getWidth() * 15;
+    double newSize = drawStack.viewLength - zoomFactor * acceleration * direction;
     if (newSize < minZoom) newSize = minZoom;
     double start = Math.max(1, screenPosToChromPos.apply(mousePos) - (pivot * newSize));
-    double end = Math.min(chromSize + 1, start + newSize);
-    if (DrawFunctions.start == start && DrawFunctions.end == end) return;
+    double end = Math.min(drawStack.chromSize + 1, start + newSize);
+    if (drawStack.start == start && drawStack.end == end) return;
     setStartEnd(start, end);
   }
 
-  void zoomAnimation(double start, double end) {
+  public void zoomAnimation(double start, double end) {
     new Thread(() -> {
       animationRunning = true;
-      final DoubleProperty currentStart = new SimpleDoubleProperty(DrawFunctions.start);
-      final DoubleProperty currentEnd = new SimpleDoubleProperty(DrawFunctions.end);
-      int startStep = (int)(start - DrawFunctions.start)/10;
-      int endStep = (int)(DrawFunctions.end - end)/10;
+      final DoubleProperty currentStart = new SimpleDoubleProperty(drawStack.start);
+      final DoubleProperty currentEnd = new SimpleDoubleProperty(drawStack.end);
+      int startStep = (int)(start - drawStack.start)/10;
+      int endStep = (int)(drawStack.end - end)/10;
       boolean ended = false;
       for(int i = 0; i < 10; i++) {
         Platform.runLater(() -> { setStartEnd(currentStart.get(), currentEnd.get()); });
@@ -196,7 +204,7 @@ public class DrawFunctions extends Canvas {
         
         try { Thread.sleep(10); } catch (InterruptedException e) { e.printStackTrace(); break; }
       }
-      if (!ended) Platform.runLater(() -> setStartEnd(start, end) );
+      if (!ended) Platform.runLater(() -> setStartEnd(drawStack.start, end) );
     }).start();
   }
 }
