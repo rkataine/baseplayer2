@@ -2,6 +2,7 @@ package org.baseplayer.draw;
 
 import java.util.function.Function;
 
+import org.baseplayer.SharedModel;
 import org.baseplayer.controllers.MainController;
 
 import javafx.application.Platform;
@@ -39,7 +40,7 @@ public class DrawFunctions extends Canvas {
   static Font tekstifont = new Font("Arial", 10);
   
   Function<Double, Double> chromPosToScreenPos = chromPos -> (chromPos - drawStack.start) * drawStack.pixelSize;
-  Function<Double, Double> heightToScreen = height -> getHeight() * height;
+  Function<Double, Double> heightToScreen = height -> getHeight()/SharedModel.sampleList.size() * height;
   Function<Double, Integer> screenPosToChromPos = screenPos -> (int)(drawStack.start + screenPos * drawStack.scale);
   private double mousePressedX;
   private Canvas reactiveCanvas;

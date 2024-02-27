@@ -1,7 +1,6 @@
 package org.baseplayer.draw;
 
-import java.util.Arrays;
-import java.util.Comparator;
+import org.baseplayer.SharedModel;
 
 import javafx.application.Platform;
 import javafx.scene.canvas.Canvas;
@@ -9,41 +8,40 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Line;
 
 public class DrawSampleData extends DrawFunctions {
-  private Line[] lines;
-  int LINES = 1000;
+  
   public Image snapshot;
   private GraphicsContext gc;
-  private Line selectedLine;
-  
+  //private Line selectedLine;
+  //private TrackInfo trackInfo;
+
   public DrawSampleData(Canvas reactiveCanvas, StackPane parent, DrawStack drawStack) {
     super(reactiveCanvas, parent, drawStack);
+    //trackInfo = new TrackInfo(sidebargc, gc, SharedModel.sampleList);
     widthProperty().addListener((obs, oldVal, newVal) -> { resizing = true; setStartEnd(drawStack.start, drawStack.end); resizing = false; });
     gc = getGraphicsContext2D();
     gc.setLineWidth(1);
-    lines = new Line[LINES];
-    
+     
     // set onmousemoved event
-    reactiveCanvas.setOnMouseExited(event -> { selectedLine = null; clearReactive(); });
-    reactiveCanvas.setOnMouseMoved(event -> {
+    //reactiveCanvas.setOnMouseExited(event -> { selectedLine = null; clearReactive(); });
+    /* reactiveCanvas.setOnMouseMoved(event -> {
      
       double x = event.getX();
       double y = event.getY();
 
       selectedLine = null;
       
-      for (Line line : lines) {
-        if (line.getEndX() < drawStack.start-1) continue;
-        if (line.getStartX() > drawStack.end) break;
+      for (DrawStack.Variant line : drawStack.lines) {
+        if (line.line.getEndX() < drawStack.start-1) continue;
+        if (line.line.getStartX() > drawStack.end) break;
        
-        double screenPos = chromPosToScreenPos.apply(line.getStartX());
-        double screenPosY = getHeight() * line.getEndY();
+        double screenPos = chromPosToScreenPos.apply(line.line.getStartX());
+        double screenPosY = getHeight() * line.line.getEndY();
         
         if (x >= screenPos -4 && x <= screenPos + drawStack.pixelSize + 4) {
           if (y >= screenPosY){
-            selectedLine = line;
+            selectedLine = line.line;
             break;
           }
         }        
@@ -54,13 +52,8 @@ public class DrawSampleData extends DrawFunctions {
         drawLine(selectedLine, Color.INDIANRED, reactivegc);
       }
 
-    });
+    }); */
 
-    for (int i = 0; i < lines.length; i++) {
-      int x = (int)(Math.random() * drawStack.chromSize);
-      lines[i] = new Line(x, 0, x, Math.random());
-    }    
-    Arrays.sort(lines, Comparator.comparing(line -> line.getStartX()));
     Platform.runLater(() -> { draw(); });
   }
   void drawSnapShot() { if (snapshot != null) gc.drawImage(snapshot, 0, 0, getWidth(), getHeight()); }
@@ -73,21 +66,23 @@ public class DrawSampleData extends DrawFunctions {
     super.draw();
   }
   void drawVariants() {    
-    for (Line line : lines) {
-      if (line.getEndX() < drawStack.start-1) continue;
-      if (line.getStartX() > drawStack.end) break;
+    for (DrawStack.Variant line : drawStack.lines) {
+      if (line.line.getEndX() < drawStack.start-1) continue;
+      if (line.line.getStartX() > drawStack.end) break;
       drawLine(line, lineColor, gc);    
     }
   }
-  void drawLine(Line line, Color color, GraphicsContext gc) {
+  void drawLine(DrawStack.Variant line, Color color, GraphicsContext gc) {
     gc.setStroke(color);
     gc.setFill(color);
-    double screenPos = chromPosToScreenPos.apply(line.getStartX());
-    double ypos = heightToScreen.apply(line.getEndY());
-    if (drawStack.pixelSize > 1) { 
-      gc.fillRect(screenPos, ypos, drawStack.pixelSize, getHeight() - getHeight() * line.getEndY());
-     
-    } else gc.strokeLine(screenPos, getHeight(), screenPos, ypos);
+    double sampleHeight = getHeight() / SharedModel.sampleList.size();
+    double screenPos = chromPosToScreenPos.apply(line.line.getStartX());
+    double ypos = sampleHeight * line.index;
+    double height = heightToScreen.apply(line.line.getEndY());
+    
+    if (drawStack.pixelSize > 1) 
+         gc.fillRect(screenPos, ypos, drawStack.pixelSize, ypos - height);
+    else gc.strokeLine(screenPos, ypos, screenPos, ypos-height);
   }
 
 }

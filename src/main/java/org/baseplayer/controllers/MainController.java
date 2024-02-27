@@ -2,16 +2,18 @@ package org.baseplayer.controllers;
 
 import java.util.ArrayList;
 
+import org.baseplayer.SharedModel;
 import org.baseplayer.draw.DrawFunctions;
 import org.baseplayer.draw.DrawSampleData;
 import org.baseplayer.draw.DrawStack;
-
+import org.baseplayer.draw.SideBarStack;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Label;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.TextField;
@@ -19,6 +21,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Region;
 import org.baseplayer.utils.BaseUtils;
+import javafx.scene.layout.StackPane;
 
 public class MainController {
   @FXML private SplitPane drawCanvas;
@@ -26,27 +29,34 @@ public class MainController {
   @FXML private TextField positionField;
   @FXML private SplitPane chromSplit;
   @FXML private SplitPane drawSplit;
-  @FXML private AnchorPane drawSideBar;
+  @FXML private SplitPane drawSideBar;
+  @FXML private StackPane drawSideBarStackPane;
+  //@FXML private Canvas drawSideBarCanvas;
   @FXML private AnchorPane chromSideBar;
   @FXML private SplitPane mainSplit;
   @FXML private AnchorPane chromPane;
 
   @FXML private Label memLabel;
+  public Canvas drawSideBarCanvas; 
   public static SplitPane chromSplitPane;
   public static SplitPane drawPane;
+ 
   public static boolean dividerHovered;
   public static boolean isActive = false;
   public static AnchorPane staticDraw;
   Runtime instance = Runtime.getRuntime();
   IntegerProperty memoryUsage = new SimpleIntegerProperty(0);
   public static DrawStack hoverStack;
-  public static ArrayList<DrawStack> drawStacks = new ArrayList<DrawStack>(); 
-   
+  public static ArrayList<DrawStack> drawStacks = new ArrayList<DrawStack>();
+  SideBarStack sideBarStack;
+  
   public void initialize() {
       chromSplitPane = chromCanvas;
       drawPane = drawCanvas;
 
-      
+      for (int i=1; i<=5; i++) SharedModel.sampleList.add("Sample " + i);
+
+      sideBarStack = new SideBarStack(drawSideBarStackPane);
 
       addStack(true);  
       addMemUpdateListener();
@@ -100,7 +110,8 @@ public class MainController {
         hoverStack.chromCanvas.draw();
         hoverStack.drawCanvas.draw();
       }
-     
+
+      sideBarStack.trackInfo.draw();
       memoryUsage.set(BaseUtils.toMegabytes.apply(instance.totalMemory() - instance.freeMemory()));
     });
   }
