@@ -1,7 +1,5 @@
 package org.baseplayer.controllers;
-
 import java.util.ArrayList;
-
 import org.baseplayer.SharedModel;
 import org.baseplayer.draw.DrawFunctions;
 import org.baseplayer.draw.DrawSampleData;
@@ -53,9 +51,9 @@ public class MainController {
   public void initialize() {
       chromSplitPane = chromCanvas;
       drawPane = drawCanvas;
-
-      for (int i=1; i<=5; i++) SharedModel.sampleList.add("Sample " + i);
-
+      int samples = 5;
+      for (int i=1; i<=samples; i++) SharedModel.sampleList.add("Sample " + i);
+      SharedModel.lastVisibleSample = samples - 1;
       sideBarStack = new SideBarStack(drawSideBarStackPane);
 
       addStack(true);  
@@ -69,6 +67,7 @@ public class MainController {
   }
   void addMemUpdateListener() {
     memoryUsage.addListener((observable, oldValue, newValue) -> {
+      if (oldValue.intValue() < newValue.intValue()) return;
       int maxMem = BaseUtils.toMegabytes.apply(instance.maxMemory());
       int proportion = (int)(BaseUtils.round((newValue.doubleValue() / maxMem), 2) * 100);
       if (proportion > 80) memLabel.setStyle("-fx-text-fill: red;");

@@ -69,19 +69,23 @@ public class DrawSampleData extends DrawFunctions {
     for (DrawStack.Variant line : drawStack.lines) {
       if (line.line.getEndX() < drawStack.start-1) continue;
       if (line.line.getStartX() > drawStack.end) break;
+
       drawLine(line, lineColor, gc);    
     }
   }
   void drawLine(DrawStack.Variant line, Color color, GraphicsContext gc) {
+    if (line.index < SharedModel.firstVisibleSample || line.index > SharedModel.lastVisibleSample + 1) return;
+   
     gc.setStroke(color);
     gc.setFill(color);
-    double sampleHeight = getHeight() / SharedModel.sampleList.size();
+    double sampleHeight = getHeight() / SharedModel.visibleSamples.getAsInt(); // tämä sharedmodeliin
+    double scrollBarPosition = (SharedModel.firstVisibleSample) * sampleHeight;
     double screenPos = chromPosToScreenPos.apply(line.line.getStartX());
-    double ypos = sampleHeight * line.index;
+    double ypos = sampleHeight * line.index - scrollBarPosition;
     double height = heightToScreen.apply(line.line.getEndY());
     
     if (drawStack.pixelSize > 1) 
-         gc.fillRect(screenPos, ypos, drawStack.pixelSize, ypos - height);
+         gc.fillRect(screenPos, ypos - height, drawStack.pixelSize, height);
     else gc.strokeLine(screenPos, ypos, screenPos, ypos-height);
   }
 

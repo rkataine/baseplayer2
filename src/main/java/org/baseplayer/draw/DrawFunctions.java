@@ -40,7 +40,7 @@ public class DrawFunctions extends Canvas {
   static Font tekstifont = new Font("Arial", 10);
   
   Function<Double, Double> chromPosToScreenPos = chromPos -> (chromPos - drawStack.start) * drawStack.pixelSize;
-  Function<Double, Double> heightToScreen = height -> getHeight()/SharedModel.sampleList.size() * height;
+  Function<Double, Double> heightToScreen = height -> getHeight()/SharedModel.visibleSamples.getAsInt() * height;
   Function<Double, Integer> screenPosToChromPos = screenPos -> (int)(drawStack.start + screenPos * drawStack.scale);
   private double mousePressedX;
   private Canvas reactiveCanvas;
@@ -48,10 +48,7 @@ public class DrawFunctions extends Canvas {
   private boolean zoomDrag;
   public static double zoomFactor = 20;
   public int zoomY = - 1;
- 
-
   public static boolean resizing = false;
-
   public static boolean animationRunning = false;
 
   public DrawFunctions(Canvas reactiveCanvas, StackPane parent, DrawStack drawStack) {
@@ -74,7 +71,9 @@ public class DrawFunctions extends Canvas {
     setReactiveCanvas(reactiveCanvas);
     // Platform.runLater(() -> { setStartEnd(drawStack.start, end); });
   }
+
   void draw() {
+    
     if (MainController.drawStacks.size() > 1 && drawStack.equals(MainController.hoverStack)) {
       gc.setStroke(Color.WHITESMOKE);
       gc.strokeRect(1, -1, getWidth()-2, getHeight()+2);

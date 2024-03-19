@@ -20,7 +20,7 @@ public class DrawStack {
   public DrawSampleData drawCanvas;
 
   public Variant[] lines;
-  int LINES = 10000;
+  int LINES = 1000;
 
   public DrawStack() {
     
