@@ -1,6 +1,7 @@
 package org.baseplayer.draw;
 
 import org.baseplayer.SharedModel;
+import org.baseplayer.variant.Variant;
 
 import javafx.application.Platform;
 import javafx.scene.canvas.Canvas;
@@ -62,27 +63,25 @@ public class DrawSampleData extends DrawFunctions {
     //if (resizing) { drawSnapShot(); return; }
     gc.setFill(backgroundColor);
     gc.fillRect(0, 0, getWidth()+1, getHeight()+1);
-    drawVariants();
+    if (drawStack.variants != null) drawVariants();
     super.draw();
   }
   void drawVariants() {    
-    for (DrawStack.Variant line : drawStack.lines) {
-      if (line.line.getEndX() < drawStack.start-1) continue;
-      if (line.line.getStartX() > drawStack.end) break;
+    for (Variant variant : drawStack.variants) {
+      if (variant.line.getEndX() < drawStack.start-1) continue;
+      if (variant.line.getStartX() > drawStack.end) break;
 
-      drawLine(line, lineColor, gc);    
+      drawLine(variant, lineColor, gc);    
     }
   }
-  void drawLine(DrawStack.Variant line, Color color, GraphicsContext gc) {
-    if (line.index < SharedModel.firstVisibleSample || line.index > SharedModel.lastVisibleSample + 1) return;
+  void drawLine(Variant variant, Color color, GraphicsContext gc) {
+    if (variant.index < SharedModel.firstVisibleSample || variant.index > SharedModel.lastVisibleSample + 1) return;
    
     gc.setStroke(color);
     gc.setFill(color);
-    double sampleHeight = getHeight() / SharedModel.visibleSamples.getAsInt(); // tämä sharedmodeliin
-    double scrollBarPosition = (SharedModel.firstVisibleSample) * sampleHeight;
-    double screenPos = chromPosToScreenPos.apply(line.line.getStartX());
-    double ypos = sampleHeight * line.index - scrollBarPosition;
-    double height = heightToScreen.apply(line.line.getEndY());
+    double screenPos = chromPosToScreenPos.apply(variant.line.getStartX());
+    double ypos = SharedModel.sampleHeight * variant.index - SharedModel.scrollBarPosition;
+    double height = heightToScreen.apply(variant.line.getEndY());
     
     if (drawStack.pixelSize > 1) 
          gc.fillRect(screenPos, ypos - height, drawStack.pixelSize, height);

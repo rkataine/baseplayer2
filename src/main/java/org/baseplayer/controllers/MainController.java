@@ -1,6 +1,5 @@
 package org.baseplayer.controllers;
 import java.util.ArrayList;
-import org.baseplayer.SharedModel;
 import org.baseplayer.draw.DrawFunctions;
 import org.baseplayer.draw.DrawSampleData;
 import org.baseplayer.draw.DrawStack;
@@ -51,11 +50,7 @@ public class MainController {
   public void initialize() {
       chromSplitPane = chromCanvas;
       drawPane = drawCanvas;
-      int samples = 5;
-      for (int i=1; i<=samples; i++) SharedModel.sampleList.add("Sample " + i);
-      SharedModel.lastVisibleSample = samples - 1;
       sideBarStack = new SideBarStack(drawSideBarStackPane);
-
       addStack(true);  
       addMemUpdateListener();
       addUpdateListener();

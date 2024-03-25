@@ -1,10 +1,8 @@
 package org.baseplayer.draw;
 
 import java.util.function.Function;
-
 import org.baseplayer.SharedModel;
 import org.baseplayer.controllers.MainController;
-
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
@@ -150,9 +148,7 @@ public class DrawFunctions extends Canvas {
   void clearReactive(double x, double y, double width) { reactivegc.clearRect(x, y, width, getHeight()); }
   void clearReactive() { reactivegc.clearRect(0, 0, getWidth(), getHeight()); }
   void setStart(double start) {
-    
     if (start < 1) start = 1;
-   
     if (start + drawStack.viewLength > drawStack.chromSize + 1) return;
     setStartEnd(start, start+drawStack.viewLength);
   }

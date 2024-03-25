@@ -2,10 +2,7 @@ package org.baseplayer.draw;
 
 import javafx.scene.canvas.Canvas;
 import javafx.scene.layout.StackPane;
-import javafx.scene.shape.Line;
-import java.util.Arrays;
-import org.baseplayer.SharedModel;
-import java.util.Comparator;
+import org.baseplayer.variant.Variant;
 
 public class DrawStack {
   public double chromSize = 100000000;
@@ -19,20 +16,10 @@ public class DrawStack {
   public DrawChromData chromCanvas;
   public DrawSampleData drawCanvas;
 
-  public Variant[] lines;
-  int LINES = 1000;
+  public Variant[] variants;
+
 
   public DrawStack() {
-    
-    lines = new Variant[LINES];
-
-    for (int i = 0; i < lines.length; i++) {
-      int x = (int)(Math.random() * chromSize);
-      lines[i] = new Variant((int)(Math.random() * SharedModel.sampleList.size() + 1), new Line(x, 0, x, Math.random()));
-    }    
-    
-    Arrays.sort(lines, Comparator.comparing(line -> line.line.getStartX()));
-
     chromStack.setMinSize(0, 0);
     drawStack.setMinSize(0, 0);
 
@@ -40,14 +27,5 @@ public class DrawStack {
     chromStack.getChildren().addAll(chromCanvas, chromCanvas.getReactiveCanvas());
     drawCanvas = new DrawSampleData(new Canvas(), drawStack, this);
     drawStack.getChildren().addAll(drawCanvas, drawCanvas.getReactiveCanvas());
-  }
-
-  class Variant {
-    int index;
-    Line line;
-    public Variant(int index, Line line) {
-      this.index = index;
-      this.line = line;
-    }
   }
 }

@@ -7,7 +7,7 @@ public class SideBarStack {
   public Canvas sideCanvas;
   public Canvas reactiveCanvas;
   public TrackInfo trackInfo;
-  
+
   public SideBarStack(StackPane drawSideBarStackPane) {
     sideCanvas = new Canvas();
     reactiveCanvas = new Canvas();
